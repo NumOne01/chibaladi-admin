@@ -9,5 +9,5 @@ export default function LazyProgressbar() {
 			NProgress.done();
 		};
 	}, []);
-	return <></>;
+	return null;
 }

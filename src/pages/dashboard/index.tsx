@@ -13,22 +13,20 @@ function Dashboard() {
 	);
 
 	return isAuthenticated ? (
-		<Suspense fallback={<LazyProgressbar />}>
-			<Layout>
-				<>
-					<Switch>
-						{routes.map(route => (
-							<Route
-								key={route.path + ''}
-								{...route}
-								path={`${path}/${route.path}`}
-							/>
-						))}
-						<Redirect to={`${path}/${defaultRoute}`} />
-					</Switch>
-				</>
-			</Layout>
-		</Suspense>
+		<Layout>
+			<Suspense fallback={<LazyProgressbar />}>
+				<Switch>
+					{routes.map(route => (
+						<Route
+							key={route.path + ''}
+							{...route}
+							path={`${path}/${route.path}`}
+						/>
+					))}
+					<Redirect to={`${path}/${defaultRoute}`} />
+				</Switch>
+			</Suspense>
+		</Layout>
 	) : (
 		<Redirect to="/login" />
 	);
