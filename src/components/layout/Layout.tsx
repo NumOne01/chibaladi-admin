@@ -1,43 +1,33 @@
 import React from 'react';
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { ReactChild } from 'react';
 import Header from './header/Header';
 import Sidebar from './sidebar/Sidebar';
-import { Paper } from '@material-ui/core';
+import Paper from '@material-ui/core/Paper';
 
 export const drawerWidth = 240;
+
+interface Props {
+	children: ReactChild;
+}
 
 const useStyles = makeStyles(theme => ({
 	root: {
 		display: 'flex',
-		overflowX: 'hidden',
-		minHeight: '100%',
-		position: 'relative'
+		position: 'relative',
+		minHeight: '100%'
 	},
 	toolbar: {
 		display: 'flex',
 		alignItems: 'center',
-		justifyContent: 'flex-start',
+		justifyContent: 'flex-end',
 		padding: theme.spacing(0, 1),
 		// necessary for content to be below app bar
 		...theme.mixins.toolbar
 	},
 	content: {
 		flexGrow: 1,
-		padding: theme.spacing(3),
-		transition: theme.transitions.create('margin', {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.leavingScreen
-		}),
-		marginLeft: 0
-	},
-	contentShift: {
-		transition: theme.transitions.create('margin', {
-			easing: theme.transitions.easing.easeOut,
-			duration: theme.transitions.duration.enteringScreen
-		}),
-		marginLeft: drawerWidth
+		padding: theme.spacing(3)
 	},
 	background: {
 		backgroundColor: theme.palette.primary.main,
@@ -50,13 +40,9 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-interface Props {
-	children: ReactChild;
-}
-
 export default function MiniDrawer({ children }: Props) {
 	const classes = useStyles();
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = React.useState(false);
 
 	const handleDrawerOpen = () => {
 		setOpen(true);
@@ -69,16 +55,12 @@ export default function MiniDrawer({ children }: Props) {
 	return (
 		<div className={classes.root}>
 			<Header open={open} handleDrawerOpen={handleDrawerOpen} />
-			<div className={classes.background}></div>
-			<main
-				className={clsx(classes.content, {
-					[classes.contentShift]: open
-				})}
-			>
+			<Sidebar open={open} handleDrawerClose={handleDrawerClose} />
+			<main className={classes.content}>
 				<div className={classes.toolbar} />
+				<div className={classes.background}></div>
 				<Paper>{children}</Paper>
 			</main>
-			<Sidebar open={open} handleDrawerClose={handleDrawerClose} />
 		</div>
 	);
 }

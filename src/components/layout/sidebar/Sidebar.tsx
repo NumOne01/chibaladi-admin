@@ -32,12 +32,15 @@ const useStyles = makeStyles(theme => ({
 			duration: theme.transitions.duration.leavingScreen
 		}),
 		overflowX: 'hidden',
-		width: theme.spacing(7) + 1
+		width: theme.spacing(7) + 1,
+		[theme.breakpoints.up('sm')]: {
+			width: theme.spacing(9) + 1
+		}
 	},
 	toolbar: {
 		display: 'flex',
 		alignItems: 'center',
-		justifyContent: 'flex-start',
+		justifyContent: 'flex-end',
 		padding: theme.spacing(0, 1),
 		// necessary for content to be below app bar
 		...theme.mixins.toolbar
@@ -66,7 +69,6 @@ export default function Sidebar({ handleDrawerClose, open }: Props) {
 					[classes.drawerClose]: !open
 				})
 			}}
-			anchor="left"
 		>
 			<div className={classes.toolbar}>
 				<IconButton onClick={handleDrawerClose}>
@@ -74,7 +76,7 @@ export default function Sidebar({ handleDrawerClose, open }: Props) {
 				</IconButton>
 			</div>
 			<Divider />
-			<List className="overflow-x-hidden">
+			<List>
 				{routes.map(route => (
 					<Link to={`${url}/${route.link}`} key={route.text}>
 						<ListItem button>
@@ -86,7 +88,6 @@ export default function Sidebar({ handleDrawerClose, open }: Props) {
 					</Link>
 				))}
 			</List>
-			<Divider />
 		</Drawer>
 	);
 }

@@ -25,12 +25,11 @@ const useStyles = makeStyles(theme => ({
 			duration: theme.transitions.duration.enteringScreen
 		})
 	},
+	menuButton: {
+		marginRight: 36
+	},
 	hide: {
 		display: 'none'
-	},
-	title: {
-		flexGrow: 1,
-		marginLeft: theme.spacing(5)
 	}
 }));
 
@@ -66,14 +65,16 @@ export default function Header({ open, handleDrawerOpen }: Props) {
 					<IconButton
 						color="inherit"
 						aria-label="open drawer"
-						edge="end"
 						onClick={handleDrawerOpen}
-						className={clsx(open && classes.hide)}
+						edge="start"
+						className={clsx(classes.menuButton, {
+							[classes.hide]: open
+						})}
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography variant="h6" noWrap className={classes.title}>
-						Persistent drawer
+					<Typography variant="h6" noWrap>
+						چی بلدی
 					</Typography>
 				</Toolbar>
 			</AppBar>
