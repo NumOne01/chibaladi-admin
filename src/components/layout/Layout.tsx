@@ -27,7 +27,8 @@ const useStyles = makeStyles(theme => ({
 	},
 	content: {
 		flexGrow: 1,
-		padding: theme.spacing(3)
+		padding: theme.spacing(3),
+		paddingTop: theme.spacing(5)
 	},
 	background: {
 		backgroundColor: theme.palette.primary.main,
@@ -37,6 +38,9 @@ const useStyles = makeStyles(theme => ({
 		left: 0,
 		width: '100%',
 		zIndex: -1
+	},
+	children: {
+		minHeight: '80%'
 	}
 }));
 
@@ -59,7 +63,7 @@ export default function MiniDrawer({ children }: Props) {
 			<main className={classes.content}>
 				<div className={classes.toolbar} />
 				<div className={classes.background}></div>
-				<Paper className="p-4">{children}</Paper>
+				<Paper className={`p-4 ${classes.children}`}>{children}</Paper>
 			</main>
 		</div>
 	);

@@ -5,10 +5,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Transition } from 'components/transition/Transition';
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
-import { createCategory, fetchCategories } from 'store/categories';
+import { createCategory } from 'store/categories';
 import { closeAddTemplateDialog, createTemplate } from 'store/templates';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -23,9 +22,10 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Category } from 'api/categories/models/Category';
 import { useFormik } from 'formik';
-import { CreateTemplateBody } from 'api/templates/models/CreateTemplateBody';
 import * as Yup from 'yup';
 import { LEVEL } from 'api/templates/models/Level';
+import { translateLevel } from 'utils/translateLevel';
+import AppBar from '@material-ui/core/AppBar';
 
 interface CategoryType extends Category {
 	inputValue?: string;
@@ -49,9 +49,9 @@ const validationSchema = Yup.object({
 const filter = createFilterOptions<CategoryType>();
 
 const levels = [
-	{ text: 'ساده', value: LEVEL.BASIC },
-	{ text: 'متوسط', value: LEVEL.INTERMEDIATE },
-	{ text: 'پیشرفته', value: LEVEL.ADVANCED }
+	{ text: translateLevel(LEVEL.BASIC), value: LEVEL.BASIC },
+	{ text: translateLevel(LEVEL.INTERMEDIATE), value: LEVEL.INTERMEDIATE },
+	{ text: translateLevel(LEVEL.ADVANCED), value: LEVEL.ADVANCED }
 ];
 
 export default function AddTemplateDialog() {
@@ -79,10 +79,6 @@ export default function AddTemplateDialog() {
 		resetForm();
 	};
 
-	useEffect(() => {
-		dispatch(fetchCategories());
-	}, []);
-
 	const {
 		values,
 		errors,
@@ -108,10 +104,12 @@ export default function AddTemplateDialog() {
 			maxWidth="sm"
 			fullWidth
 		>
-			<DialogTitle id="alert-dialog-slide-title">اضافه کردن آزمون</DialogTitle>
-			<DialogContent>
+			<AppBar position="relative">
+				<DialogTitle>اضافه کردن آزمون</DialogTitle>
+			</AppBar>
+			<DialogContent className="mt-7 md:px-20">
 				<form onSubmit={handleSubmit}>
-					<DialogContentText id="alert-dialog-slide-description">
+					<DialogContentText>
 						<FormControl fullWidth variant="outlined" className="mb-4">
 							<InputLabel>سطح</InputLabel>
 							<Select

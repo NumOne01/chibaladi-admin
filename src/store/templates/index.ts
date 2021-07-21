@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { newTemplate } from 'api/templates';
+import { getTemplates, newTemplate } from 'api/templates';
 import { CreateTemplateBody } from 'api/templates/models/CreateTemplateBody';
 import { Template } from 'api/templates/models/Template';
 
@@ -9,6 +9,7 @@ export interface TemplatesState {
 	addTemplateDialog: {
 		open: boolean;
 	};
+	loading: boolean;
 }
 
 const initialState: TemplatesState = {
@@ -16,13 +17,21 @@ const initialState: TemplatesState = {
 	createLoading: false,
 	addTemplateDialog: {
 		open: false
-	}
+	},
+	loading: false
 };
 
 export const createTemplate = createAsyncThunk(
 	'templates/createTemplate',
 	async (data: CreateTemplateBody) => {
 		return await newTemplate(data);
+	}
+);
+
+export const fetchTemplates = createAsyncThunk(
+	'templates/fetchTemplates',
+	async () => {
+		return await getTemplates();
 	}
 );
 
@@ -51,6 +60,19 @@ export const templatesSlice = createSlice({
 		},
 		[createTemplate.rejected.toString()]: state => {
 			state.createLoading = false;
+		},
+		[fetchTemplates.pending.toString()]: state => {
+			state.loading = true;
+		},
+		[fetchTemplates.rejected.toString()]: state => {
+			state.loading = false;
+		},
+		[fetchTemplates.fulfilled.toString()]: (
+			state,
+			action: PayloadAction<Template[]>
+		) => {
+			state.entities = action.payload;
+			state.loading = false;
 		}
 	}
 });
