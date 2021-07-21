@@ -1,13 +1,18 @@
 import Layout from 'components/layout/Layout';
 import LazyProgressbar from 'components/lazy-progressbar/LazyProgressbar';
 import { Suspense } from 'react';
-import { Switch, Route, useRouteMatch } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
+import { RootState } from 'store';
 import routes from './routes';
 
 function Dashboard() {
 	let { path } = useRouteMatch();
+	const isAuthenticated = useSelector(
+		(store: RootState) => !!store.auth.data.access_token
+	);
 
-	return (
+	return isAuthenticated ? (
 		<Suspense fallback={<LazyProgressbar />}>
 			<Layout>
 				<>
@@ -23,6 +28,8 @@ function Dashboard() {
 				</>
 			</Layout>
 		</Suspense>
+	) : (
+		<Redirect to="/login" />
 	);
 }
 

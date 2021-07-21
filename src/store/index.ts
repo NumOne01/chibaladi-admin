@@ -1,5 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import authReducer from './auth';
+import templatesReducer from './templates';
+import categoriesReducer from './categories';
 import {
 	persistStore,
 	persistReducer,
@@ -12,12 +14,17 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-const rootReducer = combineReducers({ auth: authReducer });
+const rootReducer = combineReducers({
+	auth: authReducer,
+	templates: templatesReducer,
+	categories: categoriesReducer
+});
 
 const persistConfig = {
 	key: 'root',
 	version: 1,
-	storage
+	storage,
+	whitelist: ['auth']
 };
 
 export const persistedReducer = persistReducer(persistConfig, rootReducer);

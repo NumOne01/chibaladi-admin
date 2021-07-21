@@ -12,12 +12,12 @@ axiosInstance.interceptors.response.use(undefined, function (error) {
 		error.response.status === 401 &&
 		window.location.pathname !== '/login'
 	) {
-		window.location.href = '/login';
+		// window.location.href = '/login';
 	}
 	return Promise.reject(error);
 });
 
-axios.interceptors.request.use(
+axiosInstance.interceptors.request.use(
 	config => {
 		const token = store.getState().auth.data.access_token;
 

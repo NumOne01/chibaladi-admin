@@ -59,7 +59,7 @@ export default function MiniDrawer({ children }: Props) {
 			<main className={classes.content}>
 				<div className={classes.toolbar} />
 				<div className={classes.background}></div>
-				<Paper>{children}</Paper>
+				<Paper className="p-4">{children}</Paper>
 			</main>
 		</div>
 	);
