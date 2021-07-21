@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { useSelector } from 'react-redux';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom';
 import { RootState } from 'store';
-import routes from './routes';
+import routes, { defaultRoute } from './routes';
 
 function Dashboard() {
 	let { path } = useRouteMatch();
@@ -24,6 +24,7 @@ function Dashboard() {
 								path={`${path}/${route.path}`}
 							/>
 						))}
+						<Redirect to={`${path}/${defaultRoute}`} />
 					</Switch>
 				</>
 			</Layout>

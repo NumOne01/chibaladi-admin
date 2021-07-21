@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { store } from 'store';
+import { logout } from 'store/auth';
 const { REACT_APP_API_URL } = process.env;
 
 const axiosInstance = axios.create({
@@ -12,7 +13,8 @@ axiosInstance.interceptors.response.use(undefined, function (error) {
 		error.response.status === 401 &&
 		window.location.pathname !== '/login'
 	) {
-		// window.location.href = '/login';
+		store.dispatch(logout());
+		window.location.href = '/login';
 	}
 	return Promise.reject(error);
 });

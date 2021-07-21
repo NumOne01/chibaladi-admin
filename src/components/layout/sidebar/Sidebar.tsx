@@ -85,6 +85,7 @@ export default function Sidebar({ handleDrawerClose, open }: Props) {
 							</ListItemIcon>
 							<ListItemText primary={route.text} />
 						</ListItem>
+						<Divider />
 					</Link>
 				))}
 			</List>
