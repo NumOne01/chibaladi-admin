@@ -1,23 +1,37 @@
 import { Template } from 'api/templates/models/Template';
 import Paper from '@material-ui/core/Paper';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { translateLevel } from 'utils/translateLevel';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { CircularProgress, IconButton, Tooltip } from '@material-ui/core';
+import { Link, useRouteMatch } from 'react-router-dom';
+import { deleteTemplate } from 'store/templates';
 
 interface Props {
 	template: Template;
 }
 
 export default function TemplateCard({ template }: Props) {
+	const dispatch = useDispatch();
 	const { entities: categories } = useSelector(
 		(store: RootState) => store.categories
 	);
+
+	const { deleteLoading } = useSelector((store: RootState) => store.templates);
 
 	const findCategoryNameById = () => {
 		const category = categories.find(
 			category => category.id === template.categoryId
 		);
 		return category?.name;
+	};
+
+	const { path } = useRouteMatch();
+
+	const onDeleteTemplate = () => {
+		dispatch(deleteTemplate(template.id));
 	};
 
 	return (
@@ -31,9 +45,29 @@ export default function TemplateCard({ template }: Props) {
 					<span className="text-gray-500">سطح :‌ </span>
 					{translateLevel(template.level)}
 				</div>
-				<div>
+				<div className="mb-2">
 					<span className="text-gray-500">وضعیت :‌ </span>
 					{template.isReady ? 'فعال' : 'غیرفعال'}‌
+				</div>
+				<div className="flex items-center">
+					<Link to={`${path}/${template.id}`}>
+						<Tooltip title="ویرایش" arrow>
+							<IconButton>
+								<EditIcon color="primary" />
+							</IconButton>
+						</Tooltip>
+					</Link>
+					<div className="mr-2">
+						{deleteLoading[template.id] ? (
+							<CircularProgress size={24} />
+						) : (
+							<Tooltip title="حذف" arrow>
+								<IconButton onClick={onDeleteTemplate}>
+									<DeleteIcon color="secondary" />
+								</IconButton>
+							</Tooltip>
+						)}
+					</div>
 				</div>
 			</Paper>
 		</div>

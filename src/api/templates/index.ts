@@ -11,3 +11,7 @@ export const getTemplates = () => {
 export const newTemplate = (template: CreateTemplateBody) => {
 	return axios.post<Template>(`${PREFIX}`, template).then(data => data.data);
 };
+
+export const removeTemplate = (templateId: string) => {
+	return axios.delete(`${PREFIX}/${templateId}`);
+};

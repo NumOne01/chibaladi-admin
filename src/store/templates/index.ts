@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getTemplates, newTemplate } from 'api/templates';
+import { getTemplates, newTemplate, removeTemplate } from 'api/templates';
 import { CreateTemplateBody } from 'api/templates/models/CreateTemplateBody';
 import { Template } from 'api/templates/models/Template';
 
 export interface TemplatesState {
 	entities: Template[];
 	createLoading: boolean;
+	deleteLoading: { [templateId: string]: boolean };
 	addTemplateDialog: {
 		open: boolean;
 	};
@@ -15,6 +16,7 @@ export interface TemplatesState {
 const initialState: TemplatesState = {
 	entities: [],
 	createLoading: false,
+	deleteLoading: {},
 	addTemplateDialog: {
 		open: false
 	},
@@ -32,6 +34,13 @@ export const fetchTemplates = createAsyncThunk(
 	'templates/fetchTemplates',
 	async () => {
 		return await getTemplates();
+	}
+);
+
+export const deleteTemplate = createAsyncThunk(
+	'templates/deleteTemplate',
+	async (templateId: string) => {
+		return await removeTemplate(templateId);
 	}
 );
 
@@ -73,6 +82,21 @@ export const templatesSlice = createSlice({
 		) => {
 			state.entities = action.payload;
 			state.loading = false;
+		},
+		[deleteTemplate.pending.toString()]: (state, action) => {
+			const templateId = action.meta.arg;
+			state.deleteLoading[templateId] = true;
+		},
+		[deleteTemplate.rejected.toString()]: (state, action) => {
+			const templateId = action.meta.arg;
+			state.deleteLoading[templateId] = false;
+		},
+		[deleteTemplate.fulfilled.toString()]: (state, action) => {
+			const templateId = action.meta.arg;
+			state.entities = state.entities.filter(
+				template => template.id !== templateId
+			);
+			state.deleteLoading[templateId] = false;
 		}
 	}
 });

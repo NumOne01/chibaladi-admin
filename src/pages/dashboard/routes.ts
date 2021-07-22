@@ -4,6 +4,10 @@ import Logout from 'pages/logout';
 
 const routes: RouteProps[] = [
 	{
+		path: 'templates/:id',
+		component: lazy(() => import('./templates/template-edit'))
+	},
+	{
 		path: 'templates',
 		component: lazy(() => import('./templates'))
 	},
