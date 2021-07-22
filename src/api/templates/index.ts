@@ -1,5 +1,6 @@
 import axios from 'api';
 import { CreateTemplateBody } from './models/CreateTemplateBody';
+import { Question } from './models/Question';
 import { Template } from './models/Template';
 
 const PREFIX = 'quiz/v1/template';
@@ -14,4 +15,20 @@ export const newTemplate = (template: CreateTemplateBody) => {
 
 export const removeTemplate = (templateId: string) => {
 	return axios.delete(`${PREFIX}/${templateId}`);
+};
+
+export const getQuestions = (templateId: string) => {
+	return axios
+		.get<Question[]>(`${PREFIX}/${templateId}/questions`)
+		.then(data => data.data);
+};
+
+export const addQuestion = (question: Question, templateId: string) => {
+	return axios
+		.put<Question>(`${PREFIX}/${templateId}/questions`)
+		.then(data => data.data);
+};
+
+export const setTemplateStatus = (templateId: string, status: boolean) => {
+	return axios.put(`${PREFIX}/${templateId}/ready?isReady=${status}`);
 };

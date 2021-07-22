@@ -1,6 +1,14 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getTemplates, newTemplate, removeTemplate } from 'api/templates';
+import {
+	addQuestion,
+	getQuestions,
+	getTemplates,
+	newTemplate,
+	removeTemplate,
+	setTemplateStatus
+} from 'api/templates';
 import { CreateTemplateBody } from 'api/templates/models/CreateTemplateBody';
+import { Question } from 'api/templates/models/Question';
 import { Template } from 'api/templates/models/Template';
 
 export interface TemplatesState {
@@ -10,7 +18,14 @@ export interface TemplatesState {
 	addTemplateDialog: {
 		open: boolean;
 	};
+	addQuestionDialog: {
+		open: boolean;
+		templateId: string;
+	};
+	templateQuestions: { [templateId: string]: Question[] };
 	loading: boolean;
+	changeStatusLoading: boolean;
+	addQuestionLoading: boolean;
 }
 
 const initialState: TemplatesState = {
@@ -20,7 +35,14 @@ const initialState: TemplatesState = {
 	addTemplateDialog: {
 		open: false
 	},
-	loading: false
+	addQuestionDialog: {
+		open: false,
+		templateId: ''
+	},
+	templateQuestions: {},
+	loading: false,
+	changeStatusLoading: false,
+	addQuestionLoading: false
 };
 
 export const createTemplate = createAsyncThunk(
@@ -44,6 +66,33 @@ export const deleteTemplate = createAsyncThunk(
 	}
 );
 
+export const fetchQuestions = createAsyncThunk(
+	'templates/fetchQuestions',
+	async (templateId: string) => {
+		return await getQuestions(templateId);
+	}
+);
+
+export const createQuestion = createAsyncThunk(
+	'templates/createQuestion',
+	async ({
+		templateId,
+		question
+	}: {
+		templateId: string;
+		question: Question;
+	}) => {
+		return await addQuestion(question, templateId);
+	}
+);
+
+export const changeTemplateStatus = createAsyncThunk(
+	'templates/changeTemplateStatus',
+	async ({ templateId, status }: { templateId: string; status: boolean }) => {
+		return await setTemplateStatus(templateId, status);
+	}
+);
+
 export const templatesSlice = createSlice({
 	name: 'templates',
 	initialState,
@@ -53,6 +102,13 @@ export const templatesSlice = createSlice({
 		},
 		closeAddTemplateDialog(state) {
 			state.addTemplateDialog.open = false;
+		},
+		openAddQuestionDialog(state, action: PayloadAction<string>) {
+			state.addQuestionDialog.open = true;
+			state.addQuestionDialog.templateId = action.payload;
+		},
+		closeAddQuestionDialog(state) {
+			state.addQuestionDialog.open = false;
 		}
 	},
 	extraReducers: {
@@ -97,11 +153,44 @@ export const templatesSlice = createSlice({
 				template => template.id !== templateId
 			);
 			state.deleteLoading[templateId] = false;
+		},
+		[fetchQuestions.fulfilled.toString()]: (state, action) => {
+			const templateId = action.meta.arg;
+			state.templateQuestions[templateId] = action.payload;
+		},
+		[createQuestion.fulfilled.toString()]: (state, action) => {
+			const { templateId } = action.meta.arg;
+			state.templateQuestions[templateId].push(action.payload);
+			state.createLoading = false;
+		},
+		[createQuestion.pending.toString()]: state => {
+			state.addQuestionLoading = true;
+		},
+		[createQuestion.rejected.toString()]: state => {
+			state.addQuestionLoading = false;
+		},
+		[changeTemplateStatus.fulfilled.toString()]: (state, action) => {
+			const { templateId, status } = action.meta.arg;
+			const template = state.entities.find(
+				template => template.id === templateId
+			);
+			if (template) template.isReady = status;
+			state.changeStatusLoading = false;
+		},
+		[changeTemplateStatus.pending.toString()]: state => {
+			state.changeStatusLoading = true;
+		},
+		[changeTemplateStatus.rejected.toString()]: state => {
+			state.changeStatusLoading = false;
 		}
 	}
 });
 
-export const { closeAddTemplateDialog, openAddTemplateDialog } =
-	templatesSlice.actions;
+export const {
+	closeAddTemplateDialog,
+	openAddTemplateDialog,
+	closeAddQuestionDialog,
+	openAddQuestionDialog
+} = templatesSlice.actions;
 
 export default templatesSlice.reducer;
