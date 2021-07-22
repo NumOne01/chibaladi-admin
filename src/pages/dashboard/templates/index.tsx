@@ -39,7 +39,7 @@ export default function Templates() {
 				</div>
 				{cateogiesLoading || templatesLoading ? (
 					<Grid container>
-						{Array.from(Array(8)).map((_, index) => (
+						{Array.from(Array(4)).map((_, index) => (
 							<Grid
 								item
 								key={index}
@@ -49,7 +49,7 @@ export default function Templates() {
 								sm={6}
 								className="mb-4 px-2"
 							>
-								<Skeleton variant="rect" height={128} />
+								<Skeleton variant="rect" height={184} />
 							</Grid>
 						))}
 					</Grid>

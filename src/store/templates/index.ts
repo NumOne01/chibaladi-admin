@@ -4,6 +4,7 @@ import {
 	getQuestions,
 	getTemplates,
 	newTemplate,
+	removeQuestion,
 	removeTemplate,
 	setTemplateStatus
 } from 'api/templates';
@@ -26,6 +27,8 @@ export interface TemplatesState {
 	loading: boolean;
 	changeStatusLoading: boolean;
 	addQuestionLoading: boolean;
+	questionsLoading: boolean;
+	deleteQuestionLoading: { [questionId: string]: boolean };
 }
 
 const initialState: TemplatesState = {
@@ -42,7 +45,9 @@ const initialState: TemplatesState = {
 	templateQuestions: {},
 	loading: false,
 	changeStatusLoading: false,
-	addQuestionLoading: false
+	addQuestionLoading: false,
+	questionsLoading: false,
+	deleteQuestionLoading: {}
 };
 
 export const createTemplate = createAsyncThunk(
@@ -90,6 +95,19 @@ export const changeTemplateStatus = createAsyncThunk(
 	'templates/changeTemplateStatus',
 	async ({ templateId, status }: { templateId: string; status: boolean }) => {
 		return await setTemplateStatus(templateId, status);
+	}
+);
+
+export const deleteQuestion = createAsyncThunk(
+	'templates/deleteQuestion',
+	async ({
+		templateId,
+		questionId
+	}: {
+		templateId: string;
+		questionId: string;
+	}) => {
+		return await removeQuestion(templateId, questionId);
 	}
 );
 
@@ -154,14 +172,22 @@ export const templatesSlice = createSlice({
 			);
 			state.deleteLoading[templateId] = false;
 		},
+		[fetchQuestions.pending.toString()]: state => {
+			state.questionsLoading = true;
+		},
+		[fetchQuestions.rejected.toString()]: state => {
+			state.questionsLoading = false;
+		},
 		[fetchQuestions.fulfilled.toString()]: (state, action) => {
 			const templateId = action.meta.arg;
 			state.templateQuestions[templateId] = action.payload;
+			state.questionsLoading = false;
 		},
 		[createQuestion.fulfilled.toString()]: (state, action) => {
 			const { templateId } = action.meta.arg;
-			state.templateQuestions[templateId].push(action.payload);
-			state.createLoading = false;
+			state.templateQuestions[templateId] = action.payload;
+			state.addQuestionLoading = false;
+			state.addQuestionDialog.open = false;
 		},
 		[createQuestion.pending.toString()]: state => {
 			state.addQuestionLoading = true;
@@ -182,6 +208,19 @@ export const templatesSlice = createSlice({
 		},
 		[changeTemplateStatus.rejected.toString()]: state => {
 			state.changeStatusLoading = false;
+		},
+		[deleteQuestion.pending.toString()]: (state, action) => {
+			const { questionId } = action.meta.arg;
+			state.deleteQuestionLoading[questionId] = true;
+		},
+		[deleteQuestion.rejected.toString()]: (state, action) => {
+			const { questionId } = action.meta.arg;
+			state.deleteQuestionLoading[questionId] = true;
+		},
+		[deleteQuestion.fulfilled.toString()]: (state, action) => {
+			const { questionId, templateId } = action.meta.arg;
+			state.deleteQuestionLoading[questionId] = false;
+			state.templateQuestions[templateId] = action.payload;
 		}
 	}
 });

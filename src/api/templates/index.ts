@@ -25,10 +25,16 @@ export const getQuestions = (templateId: string) => {
 
 export const addQuestion = (question: Question, templateId: string) => {
 	return axios
-		.put<Question>(`${PREFIX}/${templateId}/questions`)
+		.put<Question[]>(`${PREFIX}/${templateId}/questions`, question)
 		.then(data => data.data);
 };
 
 export const setTemplateStatus = (templateId: string, status: boolean) => {
 	return axios.put(`${PREFIX}/${templateId}/ready?isReady=${status}`);
+};
+
+export const removeQuestion = (templateId: string, questionId: string) => {
+	return axios
+		.delete<Question[]>(`${PREFIX}/${templateId}/questions/${questionId}`)
+		.then(data => data.data);
 };
