@@ -1,6 +1,7 @@
 import axios from 'api';
 import { CreateTemplateBody } from './models/CreateTemplateBody';
 import { Question } from './models/Question';
+import { TagGroup } from './models/TagGroup';
 import { Template } from './models/Template';
 
 const PREFIX = 'quiz/v1/template';
@@ -36,5 +37,21 @@ export const setTemplateStatus = (templateId: string, status: boolean) => {
 export const removeQuestion = (templateId: string, questionId: string) => {
 	return axios
 		.delete<Question[]>(`${PREFIX}/${templateId}/questions/${questionId}`)
+		.then(data => data.data);
+};
+
+export const getGroupTags = (templateId: string) => {
+	return axios
+		.get<TagGroup>(`${PREFIX}/${templateId}/tag-groups`)
+		.then(data => data.data);
+};
+
+export const addTag = (
+	templateId: string,
+	groupIndex: number,
+	tags: string[]
+) => {
+	return axios
+		.put<TagGroup>(`${PREFIX}/${templateId}/tag-groups/${groupIndex}`, tags)
 		.then(data => data.data);
 };

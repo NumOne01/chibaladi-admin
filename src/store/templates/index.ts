@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import {
 	addQuestion,
+	addTag,
+	getGroupTags,
 	getQuestions,
 	getTemplates,
 	newTemplate,
@@ -10,6 +12,7 @@ import {
 } from 'api/templates';
 import { CreateTemplateBody } from 'api/templates/models/CreateTemplateBody';
 import { Question } from 'api/templates/models/Question';
+import { TagGroup } from 'api/templates/models/TagGroup';
 import { Template } from 'api/templates/models/Template';
 
 export interface TemplatesState {
@@ -23,12 +26,19 @@ export interface TemplatesState {
 		open: boolean;
 		templateId: string;
 	};
+	templateTags: { [templateId: string]: TagGroup };
 	templateQuestions: { [templateId: string]: Question[] };
 	loading: boolean;
 	changeStatusLoading: boolean;
 	addQuestionLoading: boolean;
 	questionsLoading: boolean;
 	deleteQuestionLoading: { [questionId: string]: boolean };
+	groupTagsLoading: boolean;
+	addTagDialog: {
+		open: boolean;
+		templateId: string;
+	};
+	addTagLoading: boolean;
 }
 
 const initialState: TemplatesState = {
@@ -38,6 +48,7 @@ const initialState: TemplatesState = {
 	addTemplateDialog: {
 		open: false
 	},
+	templateTags: {},
 	addQuestionDialog: {
 		open: false,
 		templateId: ''
@@ -47,7 +58,13 @@ const initialState: TemplatesState = {
 	changeStatusLoading: false,
 	addQuestionLoading: false,
 	questionsLoading: false,
-	deleteQuestionLoading: {}
+	groupTagsLoading: false,
+	deleteQuestionLoading: {},
+	addTagDialog: {
+		open: false,
+		templateId: ''
+	},
+	addTagLoading: false
 };
 
 export const createTemplate = createAsyncThunk(
@@ -111,6 +128,28 @@ export const deleteQuestion = createAsyncThunk(
 	}
 );
 
+export const fetchTagGroups = createAsyncThunk(
+	'templates/fetchTagGroups',
+	async (templateId: string) => {
+		return await getGroupTags(templateId);
+	}
+);
+
+export const createTag = createAsyncThunk(
+	'templates/createTag',
+	async ({
+		templateId,
+		groupIndex,
+		tags
+	}: {
+		templateId: string;
+		groupIndex: number;
+		tags: string[];
+	}) => {
+		return await addTag(templateId, groupIndex, tags);
+	}
+);
+
 export const templatesSlice = createSlice({
 	name: 'templates',
 	initialState,
@@ -127,6 +166,13 @@ export const templatesSlice = createSlice({
 		},
 		closeAddQuestionDialog(state) {
 			state.addQuestionDialog.open = false;
+		},
+		openAddTagDialog(state, action: PayloadAction<string>) {
+			state.addTagDialog.open = true;
+			state.addTagDialog.templateId = action.payload;
+		},
+		closeAddTagDialog(state) {
+			state.addTagDialog.open = false;
 		}
 	},
 	extraReducers: {
@@ -221,6 +267,29 @@ export const templatesSlice = createSlice({
 			const { questionId, templateId } = action.meta.arg;
 			state.deleteQuestionLoading[questionId] = false;
 			state.templateQuestions[templateId] = action.payload;
+		},
+		[fetchTagGroups.pending.toString()]: state => {
+			state.groupTagsLoading = true;
+		},
+		[fetchTagGroups.rejected.toString()]: state => {
+			state.groupTagsLoading = false;
+		},
+		[fetchTagGroups.fulfilled.toString()]: (state, action) => {
+			const templateId = action.meta.arg;
+			state.templateTags[templateId] = action.payload;
+			state.groupTagsLoading = false;
+		},
+		[createTag.pending.toString()]: state => {
+			state.addTagLoading = true;
+		},
+		[createTag.fulfilled.toString()]: (state, action) => {
+			const { templateId } = action.meta.arg;
+			state.templateTags[templateId] = action.payload;
+			state.addTagLoading = false;
+			state.addTagDialog.open = false;
+		},
+		[createTag.rejected.toString()]: state => {
+			state.addTagLoading = false;
 		}
 	}
 });
@@ -229,7 +298,9 @@ export const {
 	closeAddTemplateDialog,
 	openAddTemplateDialog,
 	closeAddQuestionDialog,
-	openAddQuestionDialog
+	openAddQuestionDialog,
+	closeAddTagDialog,
+	openAddTagDialog
 } = templatesSlice.actions;
 
 export default templatesSlice.reducer;

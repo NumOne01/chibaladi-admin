@@ -5,12 +5,15 @@ import { RootState } from 'store';
 import {
 	changeTemplateStatus,
 	fetchQuestions,
-	openAddQuestionDialog
+	fetchTagGroups,
+	openAddQuestionDialog,
+	openAddTagDialog
 } from 'store/templates';
 import { translateLevel } from 'utils/translateLevel';
 import { deleteTemplate } from 'store/templates';
 import {
 	Button,
+	Chip,
 	CircularProgress,
 	Divider,
 	IconButton,
@@ -21,6 +24,7 @@ import AddQuestionDialog from 'components/templates/AddQuestionDialog';
 import QuestionRow from 'components/templates/QuestionRow';
 import AsyncSwitch from 'components/async-switch/AsyncSwitch';
 import Skeleton from '@material-ui/lab/Skeleton';
+import AddTagDialog from 'components/templates/AddTagDialog';
 
 export default function TemplateEdit() {
 	const { id } = useParams<{ id: string }>();
@@ -29,15 +33,21 @@ export default function TemplateEdit() {
 	const template = useSelector((store: RootState) =>
 		store.templates.entities.find(template => template.id === id)
 	);
-	const { deleteLoading, changeStatusLoading, questionsLoading } = useSelector(
-		(store: RootState) => store.templates
-	);
+	const {
+		deleteLoading,
+		changeStatusLoading,
+		questionsLoading,
+		groupTagsLoading
+	} = useSelector((store: RootState) => store.templates);
 	const { entities: categories } = useSelector(
 		(store: RootState) => store.categories
 	);
 	const questions = useSelector(
 		(store: RootState) => store.templates.templateQuestions[id]
 	);
+
+	const groupTags =
+		useSelector((store: RootState) => store.templates.templateTags[id]) || {};
 
 	const findCategoryNameById = () => {
 		const category = categories.find(
@@ -56,6 +66,7 @@ export default function TemplateEdit() {
 
 	useEffect(() => {
 		if (!questions) dispatch(fetchQuestions(id));
+		if (Object.keys(groupTags).length == 0) dispatch(fetchTagGroups(id));
 	}, []);
 
 	const onChangeTemplateStatus = () => {
@@ -66,6 +77,8 @@ export default function TemplateEdit() {
 			})
 		);
 	};
+
+	const onAddTemplateTag = () => [dispatch(openAddTagDialog(id))];
 
 	if (!template) return <Redirect to="/dashboard/templates" />;
 
@@ -111,6 +124,31 @@ export default function TemplateEdit() {
 			</div>
 
 			<Divider />
+			<h2 className="text-xl my-3">سرفصل ها</h2>
+			<div className="mb-4">
+				<Button color="primary" variant="contained" onClick={onAddTemplateTag}>
+					اضافه کردن سرفصل
+				</Button>
+			</div>
+			{groupTagsLoading ? (
+				Array.from(Array(2)).map((_, index) => (
+					<Skeleton key={index} variant="rect" height={72} className="mb-2" />
+				))
+			) : groupTags && Object.keys(groupTags).length === 0 ? (
+				<div className="mt-8 mb-16 text-gray-600">
+					سرفصلی برای این آزمون وجود ندارد
+				</div>
+			) : (
+				<div className="flex my-8">
+					{Object.values(groupTags).map(tag => (
+						<div key={tag} className="ml-2">
+							<Chip variant="outlined" color="primary" label={tag} />
+						</div>
+					))}
+				</div>
+			)}
+
+			<Divider />
 			<h2 className="text-xl my-3">سوال ها</h2>
 			<div className="mb-4">
 				<Button color="primary" variant="contained" onClick={onAddQuestion}>
@@ -138,6 +176,7 @@ export default function TemplateEdit() {
 					)}
 				</div>
 			)}
+			<AddTagDialog />
 			<AddQuestionDialog />
 		</div>
 	);
