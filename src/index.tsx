@@ -12,6 +12,8 @@ import { Provider } from 'react-redux';
 import { persistor, store } from 'store';
 import { PersistGate } from 'redux-persist/integration/react';
 import NProgress from 'nprogress';
+import { SWRConfig } from 'swr';
+import { fetcher } from 'api';
 
 ReactDOM.render(
 	<React.StrictMode>
@@ -19,9 +21,11 @@ ReactDOM.render(
 			<PersistGate loading={null} persistor={persistor}>
 				<RTL>
 					<ThemeProvider theme={theme}>
-						<Router>
-							<App />
-						</Router>
+						<SWRConfig value={{ fetcher }}>
+							<Router>
+								<App />
+							</Router>
+						</SWRConfig>
 					</ThemeProvider>
 				</RTL>
 			</PersistGate>

@@ -2,32 +2,19 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import AddTemplateDialog from 'components/templates/AddTemplateDialog';
 import TemplateCard from 'components/templates/TemplateCard';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'store';
-import { fetchCategories } from 'store/categories';
-import { fetchTemplates, openAddTemplateDialog } from 'store/templates';
+import { useDispatch } from 'react-redux';
+import { openAddTemplateDialog } from 'store/templates';
 import Skeleton from '@material-ui/lab/Skeleton';
+import { useCategories, useTemplates } from 'hooks/api';
 
 export default function Templates() {
 	const dispatch = useDispatch();
-
-	const { entities: templates, loading: templatesLoading } = useSelector(
-		(store: RootState) => store.templates
-	);
-
-	const { entities: categories, loading: cateogiesLoading } = useSelector(
-		(store: RootState) => store.categories
-	);
+	const { data: templates, loading: templatesLoading } = useTemplates();
+	const { loading: categoriesLoading } = useCategories();
 
 	const onAddTemplate = () => {
 		dispatch(openAddTemplateDialog());
 	};
-
-	useEffect(() => {
-		if (templates.length === 0) dispatch(fetchTemplates());
-		if (categories.length === 0) dispatch(fetchCategories());
-	}, []);
 
 	return (
 		<>
@@ -37,7 +24,7 @@ export default function Templates() {
 						آزمون جدید
 					</Button>
 				</div>
-				{cateogiesLoading || templatesLoading ? (
+				{categoriesLoading || templatesLoading ? (
 					<Grid container>
 						{Array.from(Array(4)).map((_, index) => (
 							<Grid
@@ -55,7 +42,7 @@ export default function Templates() {
 					</Grid>
 				) : (
 					<Grid container>
-						{templates.map(template => (
+						{templates?.map(template => (
 							<Grid
 								item
 								key={template.id}

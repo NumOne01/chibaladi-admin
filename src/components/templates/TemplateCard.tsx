@@ -1,28 +1,27 @@
 import { Template } from 'api/templates/models/Template';
 import Paper from '@material-ui/core/Paper';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'store';
 import { translateLevel } from 'utils/translateLevel';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core';
 import { Link, useRouteMatch } from 'react-router-dom';
-import { deleteTemplate } from 'store/templates';
+import { useCategories, useTemplates } from 'hooks/api';
+import { useState } from 'react';
+import { removeTemplate } from 'api/templates';
 
 interface Props {
 	template: Template;
 }
 
 export default function TemplateCard({ template }: Props) {
-	const dispatch = useDispatch();
-	const { entities: categories } = useSelector(
-		(store: RootState) => store.categories
-	);
+	const { data: categories } = useCategories();
 
-	const { deleteLoading } = useSelector((store: RootState) => store.templates);
+	const { mutate: mutateTemplates, data: templates } = useTemplates();
+
+	const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
 	const findCategoryNameById = () => {
-		const category = categories.find(
+		const category = categories?.find(
 			category => category.id === template.categoryId
 		);
 		return category?.name;
@@ -30,8 +29,12 @@ export default function TemplateCard({ template }: Props) {
 
 	const { path } = useRouteMatch();
 
-	const onDeleteTemplate = () => {
-		dispatch(deleteTemplate(template.id));
+	const onDeleteTemplate = async () => {
+		setDeleteLoading(true);
+		await removeTemplate(template.id);
+		const newTemplates = templates?.filter(t => t.id !== template.id);
+		mutateTemplates(newTemplates);
+		setDeleteLoading(false);
 	};
 
 	return (
@@ -58,7 +61,7 @@ export default function TemplateCard({ template }: Props) {
 						</Tooltip>
 					</Link>
 					<div className="mr-2">
-						{deleteLoading[template.id] ? (
+						{deleteLoading ? (
 							<CircularProgress size={24} />
 						) : (
 							<Tooltip title="حذف" arrow>

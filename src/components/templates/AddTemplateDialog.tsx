@@ -7,8 +7,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { Transition } from 'components/transition/Transition';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
-import { createCategory } from 'store/categories';
-import { closeAddTemplateDialog, createTemplate } from 'store/templates';
+import { closeAddTemplateDialog } from 'store/templates';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -26,6 +25,10 @@ import * as Yup from 'yup';
 import { LEVEL } from 'api/templates/models/Level';
 import { translateLevel } from 'utils/translateLevel';
 import AppBar from '@material-ui/core/AppBar';
+import { useState } from 'react';
+import { useCategories, useTemplates } from 'hooks/api';
+import { newTemplate } from 'api/templates';
+import { newCategory } from 'api/categories';
 
 interface CategoryType extends Category {
 	inputValue?: string;
@@ -57,17 +60,22 @@ const levels = [
 export default function AddTemplateDialog() {
 	const dispatch = useDispatch();
 
-	const { addTemplateDialog, createLoading } = useSelector(
+	const { addTemplateDialog } = useSelector(
 		(store: RootState) => store.templates
 	);
 
-	const categories = useSelector((store: RootState) =>
-		store.categories.entities.map(category => ({ ...category, inputValue: '' }))
-	);
+	const [createLoading, setCreateLoading] = useState<boolean>(false);
 
-	const { createCategoryLoading } = useSelector(
-		(store: RootState) => store.categories
-	);
+	let { data: categoriesData, mutate: mutateCategories } = useCategories();
+	const categories = categoriesData?.map<CategoryType>(category => ({
+		...category,
+		inputValue: ''
+	}));
+
+	const [createCategoryLoading, setCreateCategoryLoading] =
+		useState<boolean>(false);
+
+	const { data: templates, mutate: mutateTemplates } = useTemplates();
 
 	const handleClose = () => {
 		dispatch(closeAddTemplateDialog());
@@ -75,8 +83,15 @@ export default function AddTemplateDialog() {
 
 	const onSubmit = async (values: Form) => {
 		const { category, level } = values;
-		await dispatch(createTemplate({ level, categoryId: category?.id || '' }));
+		setCreateLoading(true);
+		const template = await newTemplate({
+			level,
+			categoryId: category?.id || ''
+		});
+		mutateTemplates([...(templates || []), template]);
+		setCreateLoading(false);
 		resetForm();
+		handleClose();
 	};
 
 	const {
@@ -131,7 +146,7 @@ export default function AddTemplateDialog() {
 						</FormControl>
 						<Autocomplete
 							value={values.category}
-							onChange={(event, newValue) => {
+							onChange={async (event, newValue) => {
 								if (typeof newValue === 'string') {
 									setFieldValue('category', {
 										name: newValue,
@@ -139,12 +154,11 @@ export default function AddTemplateDialog() {
 									});
 								} else if (newValue && newValue.inputValue) {
 									// Create a new value from the user input
-									dispatch(
-										createCategory({
-											name: newValue.inputValue,
-											callback: value => setFieldValue('category', value)
-										})
-									);
+									setCreateCategoryLoading(true);
+									const category = await newCategory(newValue.inputValue);
+									setFieldValue('category', category);
+									mutateCategories([...(categories || []), category]);
+									setCreateCategoryLoading(false);
 								} else {
 									setFieldValue('category', newValue);
 								}
@@ -171,7 +185,7 @@ export default function AddTemplateDialog() {
 							fullWidth
 							disabled={createCategoryLoading}
 							handleHomeEndKeys
-							options={categories}
+							options={categories || []}
 							getOptionLabel={option => {
 								// Value selected with enter, right from the input
 								if (typeof option === 'string') {

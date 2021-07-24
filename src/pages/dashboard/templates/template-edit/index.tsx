@@ -1,16 +1,8 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
-import { RootState } from 'store';
-import {
-	changeTemplateStatus,
-	fetchQuestions,
-	fetchTagGroups,
-	openAddQuestionDialog,
-	openAddTagDialog
-} from 'store/templates';
+import { openAddQuestionDialog, openAddTagDialog } from 'store/templates';
 import { translateLevel } from 'utils/translateLevel';
-import { deleteTemplate } from 'store/templates';
 import {
 	Button,
 	Chip,
@@ -25,57 +17,64 @@ import QuestionRow from 'components/templates/QuestionRow';
 import AsyncSwitch from 'components/async-switch/AsyncSwitch';
 import Skeleton from '@material-ui/lab/Skeleton';
 import AddTagDialog from 'components/templates/AddTagDialog';
+import {
+	useCategories,
+	useGroupTags,
+	useQuestions,
+	useTemplates
+} from 'hooks/api';
+import { removeTemplate, setTemplateStatus } from 'api/templates';
 
 export default function TemplateEdit() {
 	const { id } = useParams<{ id: string }>();
 	const dispatch = useDispatch();
+	const { data: templates, mutate: mutateTemplates } = useTemplates();
 
-	const template = useSelector((store: RootState) =>
-		store.templates.entities.find(template => template.id === id)
-	);
-	const {
-		deleteLoading,
-		changeStatusLoading,
-		questionsLoading,
-		groupTagsLoading
-	} = useSelector((store: RootState) => store.templates);
-	const { entities: categories } = useSelector(
-		(store: RootState) => store.categories
-	);
-	const questions = useSelector(
-		(store: RootState) => store.templates.templateQuestions[id]
+	const template = templates?.find(template => template.id === id);
+
+	const { data: categories } = useCategories();
+
+	const { data: questions, loading: questionsLoading } = useQuestions(
+		template?.id || ''
 	);
 
-	const groupTags =
-		useSelector((store: RootState) => store.templates.templateTags[id]) || {};
+	const { data: groupTags, loading: groupTagsLoading } = useGroupTags(
+		template?.id || ''
+	);
+
+	const [changeStatusLoading, setChangeStatusLoading] =
+		useState<boolean>(false);
+
+	const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
 	const findCategoryNameById = () => {
-		const category = categories.find(
+		const category = categories?.find(
 			category => category.id === template?.categoryId
 		);
 		return category?.name;
 	};
 
-	const onDeleteTemplate = () => {
-		dispatch(deleteTemplate(template?.id || ''));
+	const onDeleteTemplate = async () => {
+		setDeleteLoading(true);
+		await removeTemplate(template?.id || '');
+		const newTemplates = templates?.filter(t => t.id !== template?.id);
+		mutateTemplates(newTemplates);
+		setDeleteLoading(false);
 	};
 
 	const onAddQuestion = () => {
 		dispatch(openAddQuestionDialog(id));
 	};
 
-	useEffect(() => {
-		if (!questions) dispatch(fetchQuestions(id));
-		if (Object.keys(groupTags).length == 0) dispatch(fetchTagGroups(id));
-	}, []);
-
-	const onChangeTemplateStatus = () => {
-		dispatch(
-			changeTemplateStatus({
-				templateId: template?.id || '',
-				status: !template?.isReady
-			})
-		);
+	const onChangeTemplateStatus = async () => {
+		setChangeStatusLoading(true);
+		await setTemplateStatus(template?.id || '', !template?.isReady);
+		const newTemplates = templates?.filter(t => t.id !== template?.id);
+		if (template) {
+			template.isReady = !template.isReady;
+			mutateTemplates([...(newTemplates || []), template]);
+		}
+		setChangeStatusLoading(false);
 	};
 
 	const onAddTemplateTag = () => [dispatch(openAddTagDialog(id))];
@@ -110,7 +109,7 @@ export default function TemplateEdit() {
 						</Tooltip>
 					</div>
 					<div>
-						{deleteLoading[template.id] ? (
+						{deleteLoading ? (
 							<CircularProgress size={24} />
 						) : (
 							<Tooltip title="حذف" arrow>
@@ -140,7 +139,7 @@ export default function TemplateEdit() {
 				</div>
 			) : (
 				<div className="flex my-8">
-					{Object.values(groupTags).map(tag => (
+					{Object.values(groupTags || {}).map(tag => (
 						<div key={tag} className="ml-2">
 							<Chip variant="outlined" color="primary" label={tag} />
 						</div>

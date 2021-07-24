@@ -7,7 +7,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { Transition } from 'components/transition/Transition';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
-import { closeAddQuestionDialog, createQuestion } from 'store/templates';
+import { closeAddQuestionDialog } from 'store/templates';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -30,6 +30,8 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import { useState } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { addQuestion } from 'api/templates';
+import { useQuestions } from 'hooks/api';
 
 const initialValues: Question = {
 	id: '',
@@ -52,13 +54,17 @@ const validationSchema = Yup.object({
 export default function AddQuestionDialog() {
 	const dispatch = useDispatch();
 
-	const { addQuestionDialog, addQuestionLoading } = useSelector(
-		(store: RootState) => store.templates
+	const { open, templateId } = useSelector(
+		(store: RootState) => store.templates.addQuestionDialog
 	);
+
+	const { mutate } = useQuestions(templateId);
 
 	const handleClose = () => {
 		dispatch(closeAddQuestionDialog());
 	};
+
+	const [addQuestionLoading, setAddQuestionLoading] = useState<boolean>(false);
 
 	const onSubmit = async (
 		values: Question,
@@ -68,13 +74,12 @@ export default function AddQuestionDialog() {
 			setAnswerError('یک گزینه را به عنوان گزینه صحیح انتخاب کنید');
 		} else {
 			values.options[answer].isAnswer = true;
-			await dispatch(
-				createQuestion({
-					templateId: addQuestionDialog.templateId,
-					question: values
-				})
-			);
+			setAddQuestionLoading(true);
+			const newQuestions = await addQuestion(values, templateId);
+			mutate(newQuestions);
+			setAddQuestionLoading(false);
 			resetForm();
+			handleClose();
 		}
 	};
 
@@ -85,7 +90,7 @@ export default function AddQuestionDialog() {
 
 	return (
 		<Dialog
-			open={addQuestionDialog.open}
+			open={open}
 			TransitionComponent={Transition}
 			keepMounted
 			onClose={handleClose}

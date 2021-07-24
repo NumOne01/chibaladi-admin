@@ -6,11 +6,11 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Question } from 'api/templates/models/Question';
 import { CircularProgress, IconButton, Tooltip } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'store';
 import React from 'react';
-import { deleteQuestion } from 'store/templates';
 import CheckIcon from '@material-ui/icons/CheckCircleOutline';
+import { useState } from 'react';
+import { removeQuestion } from 'api/templates';
+import { useQuestions } from 'hooks/api';
 
 interface Props {
 	question: Question;
@@ -18,14 +18,16 @@ interface Props {
 }
 
 export default function QuestionRow({ question, templateId }: Props) {
-	const dispatch = useDispatch();
-	const { deleteQuestionLoading } = useSelector(
-		(store: RootState) => store.templates
-	);
+	const { mutate } = useQuestions(templateId);
+	const [deleteQuestionLoading, setDeleteQuestionLoading] =
+		useState<boolean>(false);
 
-	const onDeleteQuestion = (event: React.MouseEvent) => {
+	const onDeleteQuestion = async (event: React.MouseEvent) => {
 		event.stopPropagation();
-		dispatch(deleteQuestion({ templateId, questionId: question.id }));
+		setDeleteQuestionLoading(true);
+		const newQuestions = await removeQuestion(templateId, question.id);
+		mutate(newQuestions);
+		setDeleteQuestionLoading(false);
 	};
 
 	return (
@@ -36,7 +38,7 @@ export default function QuestionRow({ question, templateId }: Props) {
 			>
 				<Typography>{question.text}</Typography>
 				<div className="mr-auto">
-					{deleteQuestionLoading[question.id] ? (
+					{deleteQuestionLoading ? (
 						<div className="p-2">
 							<CircularProgress size={24} />
 						</div>

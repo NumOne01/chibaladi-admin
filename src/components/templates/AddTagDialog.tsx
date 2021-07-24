@@ -7,34 +7,18 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import { Transition } from 'components/transition/Transition';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
-import {
-	closeAddQuestionDialog,
-	closeAddTagDialog,
-	createQuestion,
-	createTag
-} from 'store/templates';
+import { closeAddTagDialog } from 'store/templates';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import TextField from '@material-ui/core/TextField';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { FieldArray, Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import AppBar from '@material-ui/core/AppBar';
-import { Question } from 'api/templates/models/Question';
-import {
-	Chip,
-	IconButton,
-	InputAdornment,
-	List,
-	ListItem,
-	ListItemIcon,
-	ListItemSecondaryAction,
-	ListItemText,
-	Radio,
-	Tooltip
-} from '@material-ui/core';
+import { Chip, IconButton, InputAdornment, Tooltip } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { useState } from 'react';
-import DeleteIcon from '@material-ui/icons/Delete';
+import { addTag } from 'api/templates';
+import { useGroupTags } from 'hooks/api';
 
 interface From {
 	groupIndex: string;
@@ -54,30 +38,36 @@ const validationSchema = Yup.object({
 export default function AddTagDialog() {
 	const dispatch = useDispatch();
 
-	const { addTagDialog, addTagLoading } = useSelector(
-		(store: RootState) => store.templates
+	const { open, templateId } = useSelector(
+		(store: RootState) => store.templates.addTagDialog
 	);
+
+	const [addTagLoading, setAddTagLoading] = useState<boolean>(false);
 
 	const handleClose = () => {
 		dispatch(closeAddTagDialog());
 	};
 
+	const { mutate } = useGroupTags(templateId);
+
 	const onSubmit = async (values: From, { resetForm }: FormikHelpers<From>) => {
-		await dispatch(
-			createTag({
-				templateId: addTagDialog.templateId,
-				groupIndex: Number(values.groupIndex),
-				tags: values.tags
-			})
+		setAddTagLoading(true);
+		const newGroupTag = await addTag(
+			templateId,
+			Number(values.groupIndex),
+			values.tags
 		);
+		mutate(newGroupTag);
 		resetForm();
+		setAddTagLoading(false);
+		handleClose();
 	};
 
 	const [tagToAdd, setTagToAdd] = useState<string>('');
 
 	return (
 		<Dialog
-			open={addTagDialog.open}
+			open={open}
 			TransitionComponent={Transition}
 			keepMounted
 			onClose={handleClose}
