@@ -4,6 +4,7 @@ import CategoryRow from 'components/categories/CategoryRow';
 import { useCategories } from 'hooks/api';
 import { useDispatch } from 'react-redux';
 import { openAddCategoryDialog } from 'store/categories';
+import { Helmet } from 'react-helmet';
 
 export default function Categories() {
 	const dispatch = useDispatch();
@@ -15,6 +16,9 @@ export default function Categories() {
 
 	return (
 		<>
+			<Helmet>
+				<title>دسته بندی ها</title>
+			</Helmet>
 			<div>
 				<div className="mb-6 pr-2">
 					<Button

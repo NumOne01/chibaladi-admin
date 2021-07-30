@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { openAddTemplateDialog } from 'store/templates';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { useCategories, useTemplates } from 'hooks/api';
+import { Helmet } from 'react-helmet';
 
 export default function Templates() {
 	const dispatch = useDispatch();
@@ -18,6 +19,9 @@ export default function Templates() {
 
 	return (
 		<>
+			<Helmet>
+				<title>آزمون ها</title>
+			</Helmet>
 			<div>
 				<div className="mb-6 pr-2">
 					<Button color="primary" variant="contained" onClick={onAddTemplate}>
