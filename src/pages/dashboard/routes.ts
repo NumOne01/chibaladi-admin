@@ -12,6 +12,10 @@ const routes: RouteProps[] = [
 		component: lazy(() => import('./templates'))
 	},
 	{
+		path: 'categories',
+		component: lazy(() => import('./categories'))
+	},
+	{
 		path: 'logout',
 		component: Logout
 	}

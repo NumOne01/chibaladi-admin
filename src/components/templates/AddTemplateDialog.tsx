@@ -29,6 +29,7 @@ import { useState } from 'react';
 import { useCategories, useTemplates } from 'hooks/api';
 import { newTemplate } from 'api/templates';
 import { newCategory } from 'api/categories';
+import { useHistory } from 'react-router';
 
 interface CategoryType extends Category {
 	inputValue?: string;
@@ -63,6 +64,7 @@ const levels = [
 
 export default function AddTemplateDialog() {
 	const dispatch = useDispatch();
+	const history = useHistory();
 
 	const { addTemplateDialog } = useSelector(
 		(store: RootState) => store.templates
@@ -105,8 +107,8 @@ export default function AddTemplateDialog() {
 		touched,
 		handleSubmit,
 		handleChange,
-		setFieldValue,
-		resetForm
+		resetForm,
+		setFieldValue
 	} = useFormik({
 		onSubmit,
 		initialValues,
@@ -158,12 +160,7 @@ export default function AddTemplateDialog() {
 										id: ''
 									});
 								} else if (newValue && newValue.inputValue) {
-									// Create a new value from the user input
-									setCreateCategoryLoading(true);
-									const category = await newCategory(newValue.inputValue);
-									setFieldValue('category', category);
-									mutateCategories([...(categories || []), category]);
-									setCreateCategoryLoading(false);
+									history.push('/dashboard/categories');
 								} else {
 									setFieldValue('category', newValue);
 								}
@@ -209,6 +206,7 @@ export default function AddTemplateDialog() {
 							renderInput={params => (
 								<TextField
 									{...params}
+									name="category"
 									label="دسته بندی"
 									error={touched.category && Boolean(errors.category)}
 									helperText={
