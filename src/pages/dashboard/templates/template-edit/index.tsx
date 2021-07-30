@@ -130,8 +130,14 @@ export default function TemplateEdit() {
 				</Button>
 			</div>
 			{groupTagsLoading ? (
-				Array.from(Array(2)).map((_, index) => (
-					<Skeleton key={index} variant="rect" height={72} className="mb-2" />
+				Array.from(Array(5)).map((_, index) => (
+					<Skeleton
+						key={index}
+						variant="rect"
+						width={60}
+						height={28}
+						className="my-8 rounded-full inline-block ml-2"
+					/>
 				))
 			) : groupTags && Object.keys(groupTags).length === 0 ? (
 				<div className="mt-8 mb-16 text-gray-600">
@@ -141,7 +147,11 @@ export default function TemplateEdit() {
 				<div className="flex my-8">
 					{Object.values(groupTags || {}).map(tag => (
 						<div key={tag} className="ml-2">
-							<Chip variant="outlined" color="primary" label={tag} />
+							<Chip
+								variant="outlined"
+								color="primary"
+								label={tag.join(' , ')}
+							/>
 						</div>
 					))}
 				</div>
