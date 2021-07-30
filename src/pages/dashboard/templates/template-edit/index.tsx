@@ -97,6 +97,10 @@ export default function TemplateEdit() {
 						<span className="text-gray-500">وضعیت :‌ </span>
 						{template.isReady ? 'فعال' : 'غیرفعال'}‌
 					</div>
+					<div className="mb-2">
+						<span className="text-gray-500">توضیحات :‌ </span>
+						{template.details}‌
+					</div>
 				</div>
 				<div className="flex items-center">
 					<div>

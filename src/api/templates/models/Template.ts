@@ -5,4 +5,5 @@ export interface Template {
 	categoryId: string;
 	isReady: boolean;
 	level: LEVEL;
+	details: string;
 }

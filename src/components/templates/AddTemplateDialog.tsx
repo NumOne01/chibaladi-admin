@@ -37,16 +37,19 @@ interface CategoryType extends Category {
 interface Form {
 	level: string;
 	category: CategoryType | null;
+	details: string;
 }
 
 const initialValues: Form = {
 	category: null,
-	level: ''
+	level: '',
+	details: ''
 };
 
 const validationSchema = Yup.object({
 	category: Yup.mixed().required('دسته بندی الزامی است'),
-	level: Yup.string().required('سطح الزامی است')
+	level: Yup.string().required('سطح الزامی است'),
+	details: Yup.string().required('توضیحات الزامی است')
 });
 
 const filter = createFilterOptions<CategoryType>();
@@ -54,7 +57,8 @@ const filter = createFilterOptions<CategoryType>();
 const levels = [
 	{ text: translateLevel(LEVEL.BASIC), value: LEVEL.BASIC },
 	{ text: translateLevel(LEVEL.INTERMEDIATE), value: LEVEL.INTERMEDIATE },
-	{ text: translateLevel(LEVEL.ADVANCED), value: LEVEL.ADVANCED }
+	{ text: translateLevel(LEVEL.ADVANCED), value: LEVEL.ADVANCED },
+	{ text: translateLevel(LEVEL.GENERAL), value: LEVEL.GENERAL }
 ];
 
 export default function AddTemplateDialog() {
@@ -86,7 +90,8 @@ export default function AddTemplateDialog() {
 		setCreateLoading(true);
 		const template = await newTemplate({
 			level,
-			categoryId: category?.id || ''
+			categoryId: category?.id || '',
+			details: values.details
 		});
 		mutateTemplates([...(templates || []), template]);
 		setCreateLoading(false);
@@ -172,7 +177,8 @@ export default function AddTemplateDialog() {
 									filtered.push({
 										inputValue: params.inputValue,
 										name: `اضافه کردن دسته بندی "${params.inputValue}"`,
-										id: ''
+										id: '',
+										details: ''
 									});
 								}
 
@@ -186,6 +192,7 @@ export default function AddTemplateDialog() {
 							disabled={createCategoryLoading}
 							handleHomeEndKeys
 							options={categories || []}
+							className="mb-4"
 							getOptionLabel={option => {
 								// Value selected with enter, right from the input
 								if (typeof option === 'string') {
@@ -223,6 +230,20 @@ export default function AddTemplateDialog() {
 									}}
 								/>
 							)}
+						/>
+						<TextField
+							variant="outlined"
+							color="primary"
+							placeholder="توضیحات"
+							label="توضیحات"
+							multiline
+							name="details"
+							minRows={2}
+							fullWidth
+							value={values.details}
+							onChange={handleChange}
+							error={touched.details && Boolean(errors.details)}
+							helperText={touched.details ? errors.details : ''}
 						/>
 					</DialogContentText>
 					<DialogActions className="mt-8">

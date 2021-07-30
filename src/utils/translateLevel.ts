@@ -8,6 +8,8 @@ export function translateLevel(level: LEVEL): string {
 			return 'متوسط';
 		case LEVEL.ADVANCED:
 			return 'پیشرفته';
+		case LEVEL.GENERAL:
+			return 'عمومی';
 		default:
 			return '';
 	}
