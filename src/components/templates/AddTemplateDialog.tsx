@@ -78,9 +78,6 @@ export default function AddTemplateDialog() {
 		inputValue: ''
 	}));
 
-	const [createCategoryLoading, setCreateCategoryLoading] =
-		useState<boolean>(false);
-
 	const { data: templates, mutate: mutateTemplates } = useTemplates();
 
 	const handleClose = () => {
@@ -153,7 +150,7 @@ export default function AddTemplateDialog() {
 						</FormControl>
 						<Autocomplete
 							value={values.category}
-							onChange={async (event, newValue) => {
+							onChange={(event, newValue) => {
 								if (typeof newValue === 'string') {
 									setFieldValue('category', {
 										name: newValue,
@@ -184,9 +181,7 @@ export default function AddTemplateDialog() {
 							selectOnFocus
 							clearOnBlur
 							loadingText="لطفا منتظر بمانید ..."
-							loading={createCategoryLoading}
 							fullWidth
-							disabled={createCategoryLoading}
 							handleHomeEndKeys
 							options={categories || []}
 							className="mb-4"
@@ -217,14 +212,7 @@ export default function AddTemplateDialog() {
 									variant="outlined"
 									InputProps={{
 										...params.InputProps,
-										endAdornment: (
-											<>
-												{createCategoryLoading ? (
-													<CircularProgress color="inherit" size={20} />
-												) : null}
-												{params.InputProps.endAdornment}
-											</>
-										)
+										endAdornment: params.InputProps.endAdornment
 									}}
 								/>
 							)}

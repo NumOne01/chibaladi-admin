@@ -32,7 +32,7 @@ export default function AddCategoryDialog() {
 	const dispatch = useDispatch();
 	const { mutate } = useCategories();
 
-	const { open } = useSelector(
+	const { open, initialValue } = useSelector(
 		(store: RootState) => store.categories.addCategoryDialog
 	);
 
@@ -68,7 +68,7 @@ export default function AddCategoryDialog() {
 			</AppBar>
 			<DialogContent className="mt-7 md:px-10">
 				<Formik
-					initialValues={initialValues}
+					initialValues={{ ...initialValues, name: initialValue }}
 					onSubmit={onSubmit}
 					validationSchema={validationSchema}
 					render={({ values, handleChange, touched, errors }) => (

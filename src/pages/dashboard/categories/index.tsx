@@ -11,7 +11,7 @@ export default function Categories() {
 	const { data: categories, loading } = useCategories();
 
 	const handleAddCategory = () => {
-		dispatch(openAddCategoryDialog());
+		dispatch(openAddCategoryDialog(''));
 	};
 
 	return (

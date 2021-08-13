@@ -15,6 +15,7 @@
 		"@types/node": "^12.0.0",
 		"@types/react": "^17.0.0",
 		"@types/react-dom": "^17.0.0",
+		"@videojs/http-streaming": "^2.10.0",
 		"axios": "^0.21.1",
 		"formik": "^2.2.9",
 		"jss-rtl": "^0.3.0",
@@ -22,6 +23,7 @@
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
 		"react-helmet": "^6.1.0",
+		"react-player": "^2.9.0",
 		"react-redux": "^7.2.4",
 		"react-router-dom": "^5.2.0",
 		"react-scripts": "4.0.3",
@@ -29,7 +31,9 @@
 		"redux-persist": "^6.0.0",
 		"swr": "^0.5.6",
 		"typescript": "^4.1.2",
+		"video.js": "^7.14.3",
 		"web-vitals": "^1.0.1",
+		"xhook": "^1.4.9",
 		"yup": "^0.32.9"
 	},
 	"scripts": {
@@ -60,6 +64,7 @@
 		"@types/nprogress": "^0.2.0",
 		"@types/react-helmet": "^6.1.2",
 		"@types/react-router-dom": "^5.1.8",
+		"@types/video.js": "^7.3.26",
 		"autoprefixer": "9",
 		"postcss": "7",
 		"tailwindcss": "npm:@tailwindcss/postcss7-compat"

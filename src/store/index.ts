@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import authReducer from './auth';
 import templatesReducer from './templates';
+import videosReducer from './videos';
 import categoriesReducer from './categories';
 import {
 	persistStore,
@@ -17,7 +18,8 @@ import storage from 'redux-persist/lib/storage';
 const rootReducer = combineReducers({
 	auth: authReducer,
 	templates: templatesReducer,
-	categories: categoriesReducer
+	categories: categoriesReducer,
+	videos: videosReducer
 });
 
 const persistConfig = {

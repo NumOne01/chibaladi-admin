@@ -11,9 +11,9 @@ import { theme } from 'theme/theme';
 import { Provider } from 'react-redux';
 import { persistor, store } from 'store';
 import { PersistGate } from 'redux-persist/integration/react';
-import NProgress from 'nprogress';
 import { SWRConfig } from 'swr';
 import { fetcher } from 'api';
+import 'video.js/dist/video-js.css';
 
 ReactDOM.render(
 	<React.StrictMode>

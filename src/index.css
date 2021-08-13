@@ -26,6 +26,7 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 	height: 100%;
 	direction: rtl;
+	overflow-x: hidden;
 }
 
 #root {
