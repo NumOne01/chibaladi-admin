@@ -22,6 +22,10 @@ const routes: RouteProps[] = [
 	{
 		path: 'logout',
 		component: Logout
+	},
+	{
+		path: 'permissions',
+		component: lazy(() => import('./permissions'))
 	}
 ];
 

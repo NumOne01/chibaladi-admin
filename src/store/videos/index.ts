@@ -11,6 +11,11 @@ export interface VideosSliceState {
 		open: boolean;
 		video: Video | undefined;
 	};
+	permissionDialog: {
+		open: boolean;
+		videoId: string | number;
+		userId: string;
+	};
 	videosLameToken: {
 		[videoId: string]: string;
 	};
@@ -25,6 +30,11 @@ const initialState: VideosSliceState = {
 	playerDialog: {
 		open: false,
 		video: undefined
+	},
+	permissionDialog: {
+		open: false,
+		videoId: '',
+		userId: ''
 	},
 	videosLameToken: {}
 };
@@ -62,6 +72,19 @@ export const videosSlice = createSlice({
 		},
 		removeVideoLameToken(state, action: PayloadAction<string | number>) {
 			delete state.videosLameToken[action.payload];
+		},
+		openPermissionDialog(
+			state,
+			action: PayloadAction<{ videoId: string | number; userId: string }>
+		) {
+			const { userId, videoId } = action.payload;
+
+			state.permissionDialog.open = true;
+			state.permissionDialog.videoId = videoId;
+			state.permissionDialog.userId = userId;
+		},
+		closePermissionDialog(state) {
+			state.permissionDialog.open = false;
 		}
 	}
 });
@@ -73,7 +96,9 @@ export const {
 	closePlayerDialog,
 	openPlayerDialog,
 	setVideoLameToken,
-	removeVideoLameToken
+	removeVideoLameToken,
+	openPermissionDialog,
+	closePermissionDialog
 } = videosSlice.actions;
 
 export default videosSlice.reducer;

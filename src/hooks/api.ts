@@ -1,4 +1,5 @@
 import { Category } from 'api/categories/models/Category';
+import { Request } from 'api/permissions/models/Request';
 import { Question } from 'api/templates/models/Question';
 import { TagGroup } from 'api/templates/models/TagGroup';
 import { Template } from 'api/templates/models/Template';
@@ -37,5 +38,12 @@ export function useGroupTags(templateId: string) {
 
 export function useVideos() {
 	const { data, error, mutate } = useSWR<Video[]>(`${VIDEOS_PREFIX}/admin/v`);
+	return { data, error, mutate, loading: !data && !error };
+}
+
+export function useRequests() {
+	const { data, error, mutate } = useSWR<Request[]>(
+		`${VIDEOS_PREFIX}/admin/requests`
+	);
 	return { data, error, mutate, loading: !data && !error };
 }

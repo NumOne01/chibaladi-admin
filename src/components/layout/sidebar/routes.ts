@@ -2,7 +2,7 @@ import { NavigationItem } from './NavigationItem';
 import LiveHelp from '@material-ui/icons/LiveHelp';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import Videocam from '@material-ui/icons/Videocam';
-import { Category } from '@material-ui/icons';
+import { Category, Traffic } from '@material-ui/icons';
 
 const routes: NavigationItem[] = [
 	{
@@ -19,6 +19,11 @@ const routes: NavigationItem[] = [
 		text: 'ویدیو ها',
 		link: 'videos',
 		icon: Videocam
+	},
+	{
+		text: 'دسترسی ها',
+		link: 'permissions',
+		icon: Traffic
 	},
 	{
 		text: 'خروج',

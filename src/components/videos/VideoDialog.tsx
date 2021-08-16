@@ -136,6 +136,8 @@ export default function AddVideoDialog() {
 
 	const [tagToAdd, setTagToAdd] = useState<string>('');
 
+	const [categoryDetails, setCategoryDetails] = useState<string>('');
+
 	return (
 		<Dialog
 			open={open}
@@ -212,6 +214,20 @@ export default function AddVideoDialog() {
 								onChange={newVal => {
 									setFieldValue('category', newVal?.name);
 								}}
+							/>
+							<TextField
+								name="price"
+								value={categoryDetails}
+								onChange={event => {
+									setCategoryDetails(event.target.value);
+								}}
+								variant="outlined"
+								color="primary"
+								className="mb-4"
+								placeholder="توضیحات دسته بندی"
+								type="number"
+								label="توضیحات دسته بندی"
+								fullWidth
 							/>
 							<TextField
 								name="price"
