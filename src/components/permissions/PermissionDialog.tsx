@@ -37,6 +37,7 @@ export default function PermissionDialog() {
 	const dispatch = useDispatch();
 
 	const handleClose = () => {
+		resetForm()
 		dispatch(closePermissionDialog());
 	};
 
@@ -62,7 +63,7 @@ export default function PermissionDialog() {
 		handleClose();
 	};
 
-	const { values, errors, handleChange, handleBlur, touched, handleSubmit } =
+	const { values, errors, handleChange, handleBlur, touched, handleSubmit,resetForm } =
 		useFormik({
 			initialValues,
 			validationSchema,

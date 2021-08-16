@@ -1,6 +1,4 @@
 import { Request } from 'api/permissions/models/Request';
-import { useRequests } from 'hooks/api';
-import { useState } from 'react';
 import moment from 'moment-jalaali';
 import { Button } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
