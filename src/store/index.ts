@@ -3,6 +3,7 @@ import authReducer from './auth';
 import templatesReducer from './templates';
 import videosReducer from './videos';
 import categoriesReducer from './categories';
+import resourcesReducer from './resources';
 import {
 	persistStore,
 	persistReducer,
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
 	auth: authReducer,
 	templates: templatesReducer,
 	categories: categoriesReducer,
-	videos: videosReducer
+	videos: videosReducer,
+	resources: resourcesReducer
 });
 
 const persistConfig = {

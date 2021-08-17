@@ -26,6 +26,10 @@ const routes: RouteProps[] = [
 	{
 		path: 'permissions',
 		component: lazy(() => import('./permissions'))
+	},
+	{
+		path: 'resources',
+		component: lazy(() => import('./resources'))
 	}
 ];
 

@@ -2,7 +2,7 @@ import { NavigationItem } from './NavigationItem';
 import LiveHelp from '@material-ui/icons/LiveHelp';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import Videocam from '@material-ui/icons/Videocam';
-import { Category, Traffic } from '@material-ui/icons';
+import { Category, PhotoSizeSelectActual, Traffic } from '@material-ui/icons';
 
 const routes: NavigationItem[] = [
 	{
@@ -24,6 +24,11 @@ const routes: NavigationItem[] = [
 		text: 'دسترسی ها',
 		link: 'permissions',
 		icon: Traffic
+	},
+	{
+		text: 'عکس ها',
+		link: 'resources',
+		icon: PhotoSizeSelectActual
 	},
 	{
 		text: 'خروج',

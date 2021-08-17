@@ -35,7 +35,7 @@ import { AddVideoBody } from 'api/videos/models/AddVideoBody';
 import { LEVEL } from 'api/templates/models/Level';
 import { translateLevel } from 'utils/translateLevel';
 import SelectCategory from 'components/categories/SelectCategory';
-import { newVideo, updateVideo } from 'api/videos';
+import { newVideo, updateCategoryDetails, updateVideo } from 'api/videos';
 import { useVideos } from 'hooks/api';
 import { useEffect } from 'react';
 import { EditVideoBody } from 'api/videos/models/EditVideoBody';
@@ -97,12 +97,17 @@ export default function AddVideoDialog() {
 		}
 		const addedVideo = await promise;
 		mutate(prevData => [...(prevData || []), addedVideo]);
+		if (categoryDetails) {
+			await updateCategoryDetails(
+				categoryDetails,
+				addedVideo.id,
+				addedVideo.category
+			);
+		}
 		resetForm();
 		setVideoLoading(false);
 		handleClose();
 	};
-
-	useEffect(() => {}, []);
 
 	const formik = useFormik({
 		initialValues: data
@@ -207,13 +212,18 @@ export default function AddVideoDialog() {
 									{errors.level}
 								</FormHelperText>
 							</FormControl>
-							<SelectCategory
-								error={errors.category}
-								defaultValue={values.category}
-								touched={Boolean(touched.category)}
-								onChange={newVal => {
-									setFieldValue('category', newVal?.name);
-								}}
+							<TextField
+								name="category"
+								value={values.category}
+								onChange={handleChange}
+								variant="outlined"
+								color="primary"
+								className="mb-4"
+								placeholder="دسته بندی"
+								label="دسته بندی"
+								error={touched.category && Boolean(errors.category)}
+								helperText={touched.category ? errors.category : ''}
+								fullWidth
 							/>
 							<TextField
 								name="price"
@@ -225,9 +235,10 @@ export default function AddVideoDialog() {
 								color="primary"
 								className="mb-4"
 								placeholder="توضیحات دسته بندی"
-								type="number"
 								label="توضیحات دسته بندی"
 								fullWidth
+								multiline
+								minRows={2}
 							/>
 							<TextField
 								name="price"
@@ -311,7 +322,7 @@ export default function AddVideoDialog() {
 										<input
 											type="file"
 											hidden
-											// accept="video/mp4,video/x-m4v,video/*,video/m3u8"
+											accept="video/mp4,video/x-m4v,video/*"
 											onChange={event => {
 												if (event.target.files) {
 													const video = event.target.files[0];
