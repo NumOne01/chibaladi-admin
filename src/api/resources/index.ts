@@ -3,8 +3,8 @@ import { Resource } from './models/Resource';
 
 const PREFIX = 'video/v1';
 
-export const deleteResource = () => {
-	return axiosInstance.delete(`${PREFIX}/resources`);
+export const deleteResource = (name: string) => {
+	return axiosInstance.delete(`${PREFIX}/resources?name=${name}`);
 };
 
 export const getResourceByName = (name: string) => {
