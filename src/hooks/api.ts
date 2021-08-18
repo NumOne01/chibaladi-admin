@@ -4,6 +4,7 @@ import { Resource } from 'api/resources/models/Resource';
 import { Question } from 'api/templates/models/Question';
 import { TagGroup } from 'api/templates/models/TagGroup';
 import { Template } from 'api/templates/models/Template';
+import { User } from 'api/users/models/User';
 import { Video } from 'api/videos/models/Video';
 import useSWR from 'swr';
 
@@ -52,6 +53,13 @@ export function useRequests() {
 export function useResources() {
 	const { data, error, mutate } = useSWR<Resource[]>(
 		`${VIDEOS_PREFIX}/resources/all`
+	);
+	return { data, error, mutate, loading: !data && !error };
+}
+
+export function useUsers() {
+	const { data, error, mutate } = useSWR<User[]>(
+		`auth/v1/admin/u`
 	);
 	return { data, error, mutate, loading: !data && !error };
 }

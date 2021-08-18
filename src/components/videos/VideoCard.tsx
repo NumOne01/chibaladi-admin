@@ -32,7 +32,7 @@ export default function VideoCard({ video }: Props) {
 	};
 
 	return (
-		<Paper elevation={3}>
+		<Paper elevation={3} className="flex flex-col justify-between h-full">
 			<div
 				className="overflow-y-hidden max-h-40 relative cursor-pointer"
 				onClick={onPlayVideo}
@@ -46,20 +46,23 @@ export default function VideoCard({ video }: Props) {
 				</div>
 			</div>
 
-			<h2 className="p-4 text-xl">{video.title}</h2>
-			<div className="p-2 text-red-500 flex items-center">
-				{deleteLoading ? (
-					<span className="mr-2 inline-flex items-center">
-						<CircularProgress size={20} />
-					</span>
-				) : (
-					<IconButton onClick={onDeleteVideo}>
-						<Delete color="secondary" />
+			<div className="px-4 pb-2 pt-4">
+				<h2 className="text-lg">{video.title}</h2>
+				<p className="mb-2 mt-3 text-gray-700">{video.description}</p>
+				<div className="text-red-500 flex items-center">
+					{deleteLoading ? (
+						<span className="mr-2 inline-flex items-center">
+							<CircularProgress size={20} />
+						</span>
+					) : (
+						<IconButton onClick={onDeleteVideo}>
+							<Delete color="secondary" />
+						</IconButton>
+					)}
+					<IconButton onClick={onEditVideo} className="mr-1">
+						<Edit color="primary" />
 					</IconButton>
-				)}
-				<IconButton onClick={onEditVideo} className="mr-1">
-					<Edit color="primary" />
-				</IconButton>
+				</div>
 			</div>
 		</Paper>
 	);

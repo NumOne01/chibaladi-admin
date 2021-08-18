@@ -13,6 +13,7 @@ import { addResource } from 'api/resources';
 import { Transition } from 'components/transition/Transition';
 import { useFormik } from 'formik';
 import { useResources } from 'hooks/api';
+import { useEffect } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
@@ -29,13 +30,8 @@ const initialValues: Form = {
 	file: undefined
 };
 
-const validationSchema = Yup.object({
-	name: Yup.string().required('نام الزامی است'),
-	file: Yup.mixed().required('فایل عکس الزامی است')
-});
-
 export default function ResourceDialog() {
-	const { open } = useSelector(
+	const { open, resource, type } = useSelector(
 		(store: RootState) => store.resources.addResourceDialog
 	);
 	const dispatch = useDispatch();
@@ -46,13 +42,32 @@ export default function ResourceDialog() {
 		dispatch(closeResourceDialog());
 	};
 
+	useEffect(() => {
+		if (resource) {
+			setValues({ name: resource.name, file: undefined });
+		} else {
+			resetForm()
+		}
+	}, [resource]);
+
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const onSubmit = async (values: Form) => {
 		if (values.file) {
 			setLoading(true);
 			const newResource = await addResource(values.name, values.file);
-			mutate(data => [...(data || []), newResource]);
+			if (type === 'add') {
+				mutate(data => [...(data || []), newResource]);
+			} else {
+				mutate(data => {
+					const newData = [...(data || [])];
+					const resourceIndex = newData.findIndex(
+						res => res.id === resource?.id
+					);
+					newData[resourceIndex] = newResource;
+					return newData;
+				});
+			}
 			resetForm();
 			setLoading(false);
 			handleClose();
@@ -67,8 +82,17 @@ export default function ResourceDialog() {
 		handleChange,
 		handleBlur,
 		handleSubmit,
-		setFieldValue
-	} = useFormik({ initialValues, onSubmit, validationSchema });
+		setFieldValue,
+		setValues,
+		setFieldError
+	} = useFormik({
+		initialValues,
+		onSubmit,
+		validationSchema: Yup.object({
+			name: Yup.string().required('نام الزامی است'),
+			file: Yup.mixed().required('فایل عکس الزامی است')
+		})
+	});
 
 	return (
 		<Dialog
@@ -80,7 +104,7 @@ export default function ResourceDialog() {
 			TransitionComponent={Transition}
 		>
 			<AppBar position="relative">
-				<DialogTitle>عکس جدید</DialogTitle>
+				<DialogTitle>{type === 'add' ? 'عکس جدید' : 'ویرایش عکس'}</DialogTitle>
 			</AppBar>
 			<form onSubmit={handleSubmit}>
 				<DialogContent className="py-10 max-w-lg mx-auto">
@@ -102,7 +126,6 @@ export default function ResourceDialog() {
 							<input
 								type="file"
 								hidden
-								accept="image/png, image/gif, image/jpeg"
 								onChange={event => {
 									if (event.target.files) {
 										const image = event.target.files[0];
@@ -133,7 +156,7 @@ export default function ResourceDialog() {
 						type="submit"
 						disabled={loading}
 					>
-						اضافه کردن
+						{type === 'edit' ? 'ویرایش' : 'اضافه کردن'}
 					</Button>
 				</DialogActions>
 				{loading && (

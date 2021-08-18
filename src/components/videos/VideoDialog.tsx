@@ -100,7 +100,6 @@ export default function AddVideoDialog() {
 		if (categoryDetails) {
 			await updateCategoryDetails(
 				categoryDetails,
-				addedVideo.id,
 				addedVideo.category
 			);
 		}

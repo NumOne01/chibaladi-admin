@@ -38,10 +38,9 @@ export const getVideoPermission = (videoId: number) => {
 
 export const updateCategoryDetails = (
 	details: string,
-	videoId: number | string,
 	name: string
 ) => {
-	return axios.put<CategoryInfo>(`video/v1/info/category/${videoId}`, {
+	return axios.put<CategoryInfo>(`video/v1/info/category/${name}`, {
 		name,
 		details
 	});

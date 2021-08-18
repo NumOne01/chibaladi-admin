@@ -30,15 +30,15 @@ export default function Videos() {
 				{loading ? (
 					<Grid container>
 						{Array.from(Array(8)).map((_, index) => (
-							<Grid key={index} sm={6} md={4} lg={3} className="p-4" item>
-								<Skeleton variant="rect" className="h-40 w-full" />
+							<Grid key={index} sm={6} md={4} className="p-4" item>
+								<Skeleton variant="rect" className="w-full" height={280} />
 							</Grid>
 						))}
 					</Grid>
 				) : (
 					<Grid container>
 						{videos?.map(video => (
-							<Grid key={video.id} sm={6} md={4} lg={3} className="p-4" item>
+							<Grid key={video.id} sm={6} md={4} className="p-4" item>
 								<VideoCard video={video} />
 							</Grid>
 						))}
