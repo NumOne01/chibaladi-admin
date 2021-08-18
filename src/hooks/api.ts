@@ -58,8 +58,6 @@ export function useResources() {
 }
 
 export function useUsers() {
-	const { data, error, mutate } = useSWR<User[]>(
-		`auth/v1/admin/u`
-	);
+	const { data, error, mutate } = useSWR<User[]>(`auth/v1/admin/u`);
 	return { data, error, mutate, loading: !data && !error };
 }

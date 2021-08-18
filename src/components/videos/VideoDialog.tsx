@@ -98,10 +98,7 @@ export default function AddVideoDialog() {
 		const addedVideo = await promise;
 		mutate(prevData => [...(prevData || []), addedVideo]);
 		if (categoryDetails) {
-			await updateCategoryDetails(
-				categoryDetails,
-				addedVideo.category
-			);
+			await updateCategoryDetails(categoryDetails, addedVideo.category);
 		}
 		resetForm();
 		setVideoLoading(false);
@@ -141,6 +138,10 @@ export default function AddVideoDialog() {
 	const [tagToAdd, setTagToAdd] = useState<string>('');
 
 	const [categoryDetails, setCategoryDetails] = useState<string>('');
+
+	useEffect(() => {
+		setCategoryDetails('');
+	}, [data]);
 
 	return (
 		<Dialog

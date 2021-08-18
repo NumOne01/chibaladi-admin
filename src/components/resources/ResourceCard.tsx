@@ -38,7 +38,7 @@ export default function ResourceCard({ resourse }: Props) {
 		<Paper elevation={3} className="h-full flex flex-col justify-between">
 			<div className="overflow-y-hidden max-h-48 relative">
 				<img
-					src={`${process.env.REACT_APP_API_URL}/video/v1/resources/${resourse.id}/content`}
+					src={`${process.env.REACT_APP_API_URL}/video/v1/resources/${resourse.name}/content`}
 					alt={resourse.name}
 				/>
 			</div>
