@@ -46,6 +46,7 @@ export const videosSlice = createSlice({
 		openAddVideoDialog(state) {
 			state.videoDialog.open = true;
 			state.videoDialog.type = 'add';
+			state.videoDialog.data = undefined;
 		},
 		openEditVideoDialog(state, action: PayloadAction<Video>) {
 			state.videoDialog.open = true;
