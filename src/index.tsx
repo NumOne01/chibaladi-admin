@@ -21,7 +21,7 @@ ReactDOM.render(
 			<PersistGate loading={null} persistor={persistor}>
 				<RTL>
 					<ThemeProvider theme={theme}>
-						<SWRConfig value={{ fetcher }}>
+						<SWRConfig value={{ fetcher, refreshInterval: 15000 }}>
 							<Router basename="/admin">
 								<App />
 							</Router>
