@@ -11,7 +11,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import { drawerWidth } from '../Layout';
 import routes from './routes';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { NavLink, useRouteMatch } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
 	drawer: {
@@ -51,7 +51,7 @@ interface Props {
 
 export default function Sidebar({ handleDrawerClose, open }: Props) {
 	const classes = useStyles();
-	const { url } = useRouteMatch();
+	const { url, path } = useRouteMatch();
 
 	return (
 		<Drawer
@@ -75,7 +75,12 @@ export default function Sidebar({ handleDrawerClose, open }: Props) {
 			<Divider />
 			<List>
 				{routes.map(route => (
-					<Link to={`${url}/${route.link}`} key={route.text}>
+					<NavLink
+						to={`${url}/${route.link}`}
+						key={route.text}
+						className="block"
+						activeClassName="bg-gray-200"
+					>
 						<ListItem button>
 							<ListItemIcon>
 								<SvgIcon component={route.icon} />
@@ -83,7 +88,7 @@ export default function Sidebar({ handleDrawerClose, open }: Props) {
 							<ListItemText primary={route.text} />
 						</ListItem>
 						<Divider />
-					</Link>
+					</NavLink>
 				))}
 			</List>
 		</Drawer>
