@@ -5,6 +5,7 @@ import { useCategories } from 'hooks/api';
 import { useDispatch } from 'react-redux';
 import { openAddCategoryDialog } from 'store/categories';
 import { Helmet } from 'react-helmet';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 export default function Categories() {
 	const dispatch = useDispatch();
@@ -30,13 +31,19 @@ export default function Categories() {
 					</Button>
 				</div>
 				<div className="md:px-20">
-					{loading ? (
-						<div>Loading ...</div>
-					) : (
-						categories?.map(category => (
-							<CategoryRow category={category} key={category.id} />
-						))
-					)}
+					{loading
+						? Array.from(Array(4)).map((_, index) => (
+								<Skeleton
+									key={index}
+									variant="rect"
+									height={52}
+									width="100%"
+									className="mb-2"
+								/>
+						  ))
+						: categories?.map(category => (
+								<CategoryRow category={category} key={category.id} />
+						  ))}
 				</div>
 			</div>
 

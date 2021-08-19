@@ -5,6 +5,7 @@ import { Question } from 'api/templates/models/Question';
 import { TagGroup } from 'api/templates/models/TagGroup';
 import { Template } from 'api/templates/models/Template';
 import { User } from 'api/users/models/User';
+import { CategoryInfo } from 'api/videos/models/CategoryInfo';
 import { Video } from 'api/videos/models/Video';
 import useSWR from 'swr';
 
@@ -59,5 +60,12 @@ export function useResources() {
 
 export function useUsers() {
 	const { data, error, mutate } = useSWR<User[]>(`auth/v1/admin/u`);
+	return { data, error, mutate, loading: !data && !error };
+}
+
+export function useVideoCategories() {
+	const { data, error, mutate } = useSWR<CategoryInfo[]>(
+		`video/v1/info/category`
+	);
 	return { data, error, mutate, loading: !data && !error };
 }

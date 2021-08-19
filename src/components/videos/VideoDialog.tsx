@@ -34,13 +34,13 @@ import { closeVideoDialog } from 'store/videos';
 import { AddVideoBody } from 'api/videos/models/AddVideoBody';
 import { LEVEL } from 'api/templates/models/Level';
 import { translateLevel } from 'utils/translateLevel';
-import SelectCategory from 'components/categories/SelectCategory';
 import { newVideo, updateCategoryDetails, updateVideo } from 'api/videos';
-import { useVideos } from 'hooks/api';
+import { useVideoCategories, useVideos } from 'hooks/api';
 import { useEffect } from 'react';
 import { EditVideoBody } from 'api/videos/models/EditVideoBody';
 import { Video } from 'api/videos/models/Video';
 import AddIcon from '@material-ui/icons/Add';
+import { CategoryInfo } from 'api/videos/models/CategoryInfo';
 
 const initialValues: AddVideoBody = {
 	category: '',
@@ -62,11 +62,13 @@ const levels = [
 
 export default function AddVideoDialog() {
 	const dispatch = useDispatch();
-	const { mutate } = useVideos();
+	const { mutate, data: videos } = useVideos();
 
 	const { open, type, data } = useSelector(
 		(store: RootState) => store.videos.videoDialog
 	);
+
+	const { data: categories, mutate: mutateCategories } = useVideoCategories();
 
 	const [videoLoading, setVideoLoading] = useState<boolean>(false);
 
@@ -96,13 +98,40 @@ export default function AddVideoDialog() {
 			promise = updateVideo(editVideoBody, data?.id || -1);
 		}
 		const addedVideo = await promise;
-		mutate(prevData => [...(prevData || []), addedVideo]);
+		if (type === 'add') mutate(prevData => [...(prevData || []), addedVideo]);
+		else {
+			updateVideos(addedVideo);
+		}
 		if (categoryDetails) {
-			await updateCategoryDetails(categoryDetails, addedVideo.category);
+			const updatedCategory = await updateCategoryDetails(
+				categoryDetails,
+				addedVideo.category
+			);
+			updateCategories(updatedCategory);
 		}
 		resetForm();
 		setVideoLoading(false);
 		handleClose();
+	};
+
+	const updateCategories = (updatedCategory: CategoryInfo) => {
+		const newData = [...(categories || [])];
+		const categoryIndex = newData.findIndex(
+			category => category.id === updatedCategory.id
+		);
+		if (categoryIndex !== -1) {
+			newData[categoryIndex] = updatedCategory;
+		}
+		mutateCategories(newData);
+	};
+
+	const updateVideos = (updatedVideo: Video) => {
+		const newData = [...(videos || [])];
+		const videoIndex = newData.findIndex(video => video.id === updatedVideo.id);
+		if (videoIndex !== -1) {
+			newData[videoIndex] = updatedVideo;
+		}
+		mutate(newData);
 	};
 
 	const formik = useFormik({
@@ -140,7 +169,10 @@ export default function AddVideoDialog() {
 	const [categoryDetails, setCategoryDetails] = useState<string>('');
 
 	useEffect(() => {
-		setCategoryDetails('');
+		setCategoryDetails(
+			categories?.find(category => category.name === data?.category)?.details ||
+				''
+		);
 	}, [data]);
 
 	return (

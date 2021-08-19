@@ -15,7 +15,7 @@ export const newVideo = (video: AddVideoBody) => {
 	formData.append('price', video.price + '');
 	formData.append('level', video.level + '');
 	formData.append('category', video.category);
-	formData.append('tags', JSON.stringify(video.tags || []))
+	formData.append('tags', JSON.stringify(video.tags || []));
 
 	return axios.post<Video>(`${PREFIX}`, formData).then(data => data.data);
 };
@@ -36,12 +36,15 @@ export const getVideoPermission = (videoId: number) => {
 		.then(data => data.data);
 };
 
-export const updateCategoryDetails = (
-	details: string,
-	name: string
-) => {
-	return axios.put<CategoryInfo>(`video/v1/info/category/${name}`, {
-		name,
-		details
-	});
+export const updateCategoryDetails = (details: string, name: string) => {
+	return axios
+		.put<CategoryInfo>(`video/v1/info/category/${name}`, {
+			name,
+			details
+		})
+		.then(data => data.data);
+};
+
+export const deleteVideoCategory = (categoryId: number | string) => {
+	return axios.delete(`video/v1/info/category/${categoryId}`);
 };

@@ -2,7 +2,12 @@ import { NavigationItem } from './NavigationItem';
 import LiveHelp from '@material-ui/icons/LiveHelp';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import Videocam from '@material-ui/icons/Videocam';
-import { Category, Person, PhotoSizeSelectActual, Traffic } from '@material-ui/icons';
+import {
+	Category,
+	Person,
+	PhotoSizeSelectActual,
+	Traffic
+} from '@material-ui/icons';
 
 const routes: NavigationItem[] = [
 	{
@@ -13,7 +18,20 @@ const routes: NavigationItem[] = [
 	{
 		text: 'دسته بندی ها',
 		link: 'categories',
-		icon: Category
+		icon: Category,
+		nested: true,
+		children: [
+			{
+				text: 'آزمون ها',
+				link: '/templates',
+				icon: null
+			},
+			{
+				text: 'ویدیو ها',
+				link: '/videos',
+				icon: null
+			}
+		]
 	},
 	{
 		text: 'ویدیو ها',

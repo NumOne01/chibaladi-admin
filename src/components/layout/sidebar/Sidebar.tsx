@@ -12,6 +12,7 @@ import SvgIcon from '@material-ui/core/SvgIcon';
 import { drawerWidth } from '../Layout';
 import routes from './routes';
 import { NavLink, useRouteMatch } from 'react-router-dom';
+import NestedListItem from './NestedListItem';
 
 const useStyles = makeStyles(theme => ({
 	drawer: {
@@ -73,22 +74,28 @@ export default function Sidebar({ handleDrawerClose, open }: Props) {
 				</IconButton>
 			</div>
 			<Divider />
-			<List>
+			<List className="pt-0">
 				{routes.map(route => (
-					<NavLink
-						to={`${url}/${route.link}`}
-						key={route.text}
-						className="block"
-						activeClassName="bg-gray-200"
-					>
-						<ListItem button>
-							<ListItemIcon>
-								<SvgIcon component={route.icon} />
-							</ListItemIcon>
-							<ListItemText primary={route.text} />
-						</ListItem>
+					<>
+						{route.nested ? (
+							<NestedListItem url={url} navItem={route} />
+						) : (
+							<NavLink
+								to={`${url}/${route.link}`}
+								key={route.text}
+								className="block"
+								activeClassName="bg-gray-200"
+							>
+								<ListItem button>
+									<ListItemIcon>
+										<SvgIcon component={route.icon} />
+									</ListItemIcon>
+									<ListItemText primary={route.text} />
+								</ListItem>
+							</NavLink>
+						)}
 						<Divider />
-					</NavLink>
+					</>
 				))}
 			</List>
 		</Drawer>

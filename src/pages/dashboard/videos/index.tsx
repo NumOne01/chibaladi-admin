@@ -1,4 +1,4 @@
-import { useVideos } from 'hooks/api';
+import { useVideoCategories, useVideos } from 'hooks/api';
 import VideoDialog from 'components/videos/VideoDialog';
 import { Helmet } from 'react-helmet';
 import { Button, Grid } from '@material-ui/core';
@@ -10,6 +10,7 @@ import PlayerDialog from 'components/videos/PlayerDialog';
 
 export default function Videos() {
 	const { data: videos, loading } = useVideos();
+	const {} = useVideoCategories();
 	const dispatch = useDispatch();
 
 	const handleAddVideo = () => {
