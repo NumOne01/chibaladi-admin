@@ -22,7 +22,7 @@ ReactDOM.render(
 				<RTL>
 					<ThemeProvider theme={theme}>
 						<SWRConfig value={{ fetcher }}>
-							<Router>
+							<Router basename="/admin">
 								<App />
 							</Router>
 						</SWRConfig>
