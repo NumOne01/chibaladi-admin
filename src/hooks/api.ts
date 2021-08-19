@@ -63,6 +63,11 @@ export function useUsers() {
 	return { data, error, mutate, loading: !data && !error };
 }
 
+export function useUserDetails(userId: number | string) {
+	const { data, error, mutate } = useSWR<User>(`auth/v1/admin/u/${userId}`);
+	return { data, error, mutate, loading: !data && !error };
+}
+
 export function useVideoCategories() {
 	const { data, error, mutate } = useSWR<CategoryInfo[]>(
 		`video/v1/info/category`

@@ -3,7 +3,7 @@ import { LEVEL } from 'api/templates/models/Level';
 export function translateLevel(level: LEVEL): string {
 	switch (level) {
 		case LEVEL.BASIC:
-			return 'ساده';
+			return 'مقدماتی';
 		case LEVEL.INTERMEDIATE:
 			return 'متوسط';
 		case LEVEL.ADVANCED:

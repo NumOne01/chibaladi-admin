@@ -40,6 +40,7 @@ export default function VideoCard({ video }: Props) {
 				<img
 					src={`${process.env.REACT_APP_API_URL}/video/v1/admin/v/${video.id}/image`}
 					alt={video.title}
+					className="w-full"
 				/>
 				<div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl">
 					<PlayCircleFilled color="primary" fontSize="inherit" />

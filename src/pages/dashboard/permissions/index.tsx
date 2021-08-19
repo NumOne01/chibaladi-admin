@@ -18,7 +18,7 @@ export default function Permissions() {
 					<Grid container>
 						{Array.from(Array(3)).map((_, index) => (
 							<Grid item key={index} xs={12} md={6} lg={4} xl={3} className="sm:px-4 mb-4">
-								<Skeleton variant="rect" width="100%" height={284} />
+								<Skeleton variant="rect" width="100%" height={348} />
 							</Grid>
 						))}
 					</Grid>
