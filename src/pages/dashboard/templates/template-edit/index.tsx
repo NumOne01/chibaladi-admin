@@ -36,11 +36,11 @@ export default function TemplateEdit() {
 	const { data: categories } = useCategories();
 
 	const { data: questions, loading: questionsLoading } = useQuestions(
-		template?.id || ''
+		template?.id
 	);
 
 	const { data: groupTags, loading: groupTagsLoading } = useGroupTags(
-		template?.id || ''
+		template?.id
 	);
 
 	const [changeStatusLoading, setChangeStatusLoading] =

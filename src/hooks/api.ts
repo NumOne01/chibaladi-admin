@@ -25,16 +25,16 @@ export function useCategories() {
 	return { data, error, mutate, loading: !data && !error };
 }
 
-export function useQuestions(templateId: string) {
+export function useQuestions(templateId: string | undefined) {
 	const { data, error, mutate } = useSWR<Question[]>(
-		`${QUIZZE_PREFIX}/${templateId}/questions`
+		templateId ? `${QUIZZE_PREFIX}/${templateId}/questions` : null
 	);
 	return { data, error, mutate, loading: !data && !error };
 }
 
-export function useGroupTags(templateId: string) {
+export function useGroupTags(templateId: string | undefined) {
 	const { data, error, mutate } = useSWR<TagGroup>(
-		`${QUIZZE_PREFIX}/${templateId}/tag-groups`
+		templateId ? `${QUIZZE_PREFIX}/${templateId}/tag-groups` : null
 	);
 	return { data, error, mutate, loading: !data && !error };
 }
