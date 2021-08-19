@@ -56,7 +56,7 @@ export default function InfoDialog() {
 				</ul>
 				<Divider className="my-4" />
 				<h2 className="text-lg my-3">صفحه انتخاب زبان</h2>
-				<p>نام عکس را برابر دسته بندی آزمون قرار دهید</p>
+				<p>نام عکس را برابر "دسته بندی آزمون" قرار دهید</p>
 				<Divider className="my-4" />
 				<h2 className="text-lg my-3">صفحه انتخاب سطح</h2>
 				<p className="mb-1">
@@ -68,6 +68,21 @@ export default function InfoDialog() {
 					<li className="mb-1">پیشرفته : {LEVEL.ADVANCED}</li>
 					<li className="mb-1">عمومی : {LEVEL.GENERAL}</li>
 				</ul>
+				<Divider className="my-4" />
+				<h2 className="text-lg my-3">صفحه استخدام</h2>
+				<p className="mb-1">
+					نام عکس را برابر "hire" قرار دهید
+				</p>
+				<Divider className="my-4" />
+				<h2 className="text-lg my-3">صفحه اشتراک گذاری دانش</h2>
+				<p className="mb-1">
+					نام عکس را برابر "share" قرار دهید
+				</p>
+				<Divider className="my-4" />
+				<h2 className="text-lg my-3">صفحه شبه مصاحبه</h2>
+				<p className="mb-1">
+					نام عکس را برابر "interview" قرار دهید
+				</p>
 			</DialogContent>
 		</Dialog>
 	);
