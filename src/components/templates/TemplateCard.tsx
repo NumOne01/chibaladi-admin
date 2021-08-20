@@ -8,6 +8,9 @@ import { Link, useRouteMatch } from 'react-router-dom';
 import { useCategories, useTemplates } from 'hooks/api';
 import { useState } from 'react';
 import { removeTemplate } from 'api/templates';
+import { useDispatch } from 'react-redux';
+import { openStatsDiaolg } from 'store/templates';
+import { Info } from '@material-ui/icons';
 
 interface Props {
 	template: Template;
@@ -15,6 +18,8 @@ interface Props {
 
 export default function TemplateCard({ template }: Props) {
 	const { data: categories } = useCategories();
+
+	const dispatch = useDispatch();
 
 	const { mutate: mutateTemplates, data: templates } = useTemplates();
 
@@ -35,6 +40,10 @@ export default function TemplateCard({ template }: Props) {
 		const newTemplates = templates?.filter(t => t.id !== template.id);
 		mutateTemplates(newTemplates);
 		setDeleteLoading(false);
+	};
+
+	const onOpenStats = () => {
+		dispatch(openStatsDiaolg(template.id));
 	};
 
 	return (
@@ -71,6 +80,11 @@ export default function TemplateCard({ template }: Props) {
 							</Tooltip>
 						)}
 					</div>
+					<Tooltip title="آمار" arrow>
+						<IconButton onClick={onOpenStats}>
+							<Info color="primary" />
+						</IconButton>
+					</Tooltip>
 				</div>
 			</Paper>
 		</div>

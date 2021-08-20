@@ -3,6 +3,7 @@ import { CreateTemplateBody } from './models/CreateTemplateBody';
 import { Question } from './models/Question';
 import { TagGroup } from './models/TagGroup';
 import { Template } from './models/Template';
+import { TemplateStats } from './models/TemplateStats';
 
 const PREFIX = 'quiz/v1/template';
 
@@ -57,5 +58,7 @@ export const addTag = (
 };
 
 export const getTemplateStats = (templateId: number | string) => {
-	return axios.get(`quiz/stats/quiz/${templateId}/general`)
-}
+	return axios
+		.post<TemplateStats>(`quiz/stats/quiz/${templateId}/general`)
+		.then(data => data.data);
+};

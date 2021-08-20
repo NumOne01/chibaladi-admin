@@ -7,6 +7,7 @@ import { openAddTemplateDialog } from 'store/templates';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { useCategories, useTemplates } from 'hooks/api';
 import { Helmet } from 'react-helmet';
+import StatsDialog from 'components/templates/StatsDialog';
 
 export default function Templates() {
 	const dispatch = useDispatch();
@@ -63,6 +64,7 @@ export default function Templates() {
 				)}
 			</div>
 			<AddTemplateDialog />
+			<StatsDialog />
 		</>
 	);
 }
