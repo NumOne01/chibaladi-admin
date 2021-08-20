@@ -15,7 +15,7 @@ export const newVideo = (video: AddVideoBody) => {
 	formData.append('price', video.price + '');
 	formData.append('level', video.level + '');
 	formData.append('category', video.category);
-	formData.append('tags', JSON.stringify(video.tags || []));
+	formData.append('tags', video.tags.join(','));
 
 	return axios.post<Video>(`${PREFIX}`, formData).then(data => data.data);
 };
