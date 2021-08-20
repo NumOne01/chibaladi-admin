@@ -13,8 +13,8 @@ axiosInstance.interceptors.response.use(undefined, function (error) {
 		error.response.status === 401 &&
 		window.location.pathname !== '/login'
 	) {
-		store.dispatch(logout());
-		window.location.href = '/login';
+		// store.dispatch(logout());
+		// window.location.href = '/login';
 	}
 	return Promise.reject(error);
 });

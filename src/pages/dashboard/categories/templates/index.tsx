@@ -1,5 +1,5 @@
 import { Button } from '@material-ui/core';
-import AddCategoryDialog from 'components/categories/AddCategoryDialog';
+import AddCategoryDialog from 'components/categories/CategoryDialog';
 import CategoryRow from 'components/categories/CategoryRow';
 import { useCategories } from 'hooks/api';
 import { useDispatch } from 'react-redux';
@@ -42,7 +42,7 @@ export default function Categories() {
 								/>
 						  ))
 						: categories?.map(category => (
-								<CategoryRow category={category} key={category.id} />
+								<CategoryRow category={category} key={category.id} hasEdit />
 						  ))}
 				</div>
 			</div>

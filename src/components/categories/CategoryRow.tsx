@@ -10,16 +10,25 @@ import { CircularProgress, IconButton, Tooltip } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useVideoCategories } from 'hooks/api';
 import { deleteVideoCategory } from 'api/videos';
+import { useDispatch } from 'react-redux';
+import { openEditCategoryDialog } from 'store/categories';
+import { Edit } from '@material-ui/icons';
 
 interface Props {
 	category: Category | CategoryInfo;
 	hasDelete?: boolean;
+	hasEdit?: boolean;
 }
 
-export default function CategoryRow({ category, hasDelete }: Props) {
+export default function CategoryRow({ category, hasDelete, hasEdit }: Props) {
 	const [loading, setLoading] = useState<boolean>(false);
+	const dispatch = useDispatch();
 
 	const { mutate } = useVideoCategories();
+
+	const onEditCategory = () => {
+		dispatch(openEditCategoryDialog(category as any));
+	};
 
 	const onDeleteCategory = async (event: MouseEvent) => {
 		event.stopPropagation();
@@ -47,6 +56,13 @@ export default function CategoryRow({ category, hasDelete }: Props) {
 									</IconButton>
 								</Tooltip>
 							)
+						)}
+						{hasEdit && (
+							<Tooltip title="ویرایش" arrow>
+								<IconButton onClick={onEditCategory}>
+									<Edit color="primary" />
+								</IconButton>
+							</Tooltip>
 						)}
 					</div>
 				</div>

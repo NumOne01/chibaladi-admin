@@ -1,16 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Category } from 'api/categories/models/Category';
 
 export interface TemplatesState {
-	addCategoryDialog: {
+	categoryDialog: {
 		open: boolean;
 		initialValue: string;
+		type: 'add' | 'edit';
+		category?: Category;
 	};
 }
 
 const initialState: TemplatesState = {
-	addCategoryDialog: {
+	categoryDialog: {
 		open: false,
-		initialValue: ''
+		initialValue: '',
+		type: 'add'
 	}
 };
 
@@ -19,16 +23,26 @@ export const templatesSlice = createSlice({
 	initialState,
 	reducers: {
 		openAddCategoryDialog(state, action: PayloadAction<string>) {
-			state.addCategoryDialog.open = true;
-			state.addCategoryDialog.initialValue = action.payload;
+			state.categoryDialog.open = true;
+			state.categoryDialog.initialValue = action.payload;
+			state.categoryDialog.category = undefined;
+			state.categoryDialog.type = 'add';
 		},
-		closeAddCategoryDialog(state) {
-			state.addCategoryDialog.open = false;
+		closeCategoryDialog(state) {
+			state.categoryDialog.open = false;
+		},
+		openEditCategoryDialog(state, action: PayloadAction<Category>) {
+			state.categoryDialog.open = true;
+			state.categoryDialog.category = action.payload;
+			state.categoryDialog.type = 'edit';
 		}
 	}
 });
 
-export const { openAddCategoryDialog, closeAddCategoryDialog } =
-	templatesSlice.actions;
+export const {
+	openAddCategoryDialog,
+	closeCategoryDialog,
+	openEditCategoryDialog
+} = templatesSlice.actions;
 
 export default templatesSlice.reducer;

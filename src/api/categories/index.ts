@@ -12,3 +12,11 @@ export const newCategory = (data: AddCategoryBody) => {
 		.put<Category>(`${PREFIX}/category`, data)
 		.then(data => data.data);
 };
+
+export const updateCategory = (category: Category) => {
+	return axios
+		.put<Category>(`${PREFIX}/category/${category.id}`, undefined, {
+			params: { details: category.details }
+		})
+		.then(data => data.data);
+};
