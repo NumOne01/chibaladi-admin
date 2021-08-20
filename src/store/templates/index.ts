@@ -1,12 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Question } from 'api/templates/models/Question';
 
 export interface TemplatesState {
 	addTemplateDialog: {
 		open: boolean;
 	};
-	addQuestionDialog: {
+	questionDialog: {
 		open: boolean;
 		templateId: string;
+		type: 'add' | 'edit';
+		question?: Question;
 	};
 	addTagDialog: {
 		open: boolean;
@@ -18,9 +21,10 @@ const initialState: TemplatesState = {
 	addTemplateDialog: {
 		open: false
 	},
-	addQuestionDialog: {
+	questionDialog: {
 		open: false,
-		templateId: ''
+		templateId: '',
+		type: 'add'
 	},
 	addTagDialog: {
 		open: false,
@@ -39,11 +43,24 @@ export const templatesSlice = createSlice({
 			state.addTemplateDialog.open = false;
 		},
 		openAddQuestionDialog(state, action: PayloadAction<string>) {
-			state.addQuestionDialog.open = true;
-			state.addQuestionDialog.templateId = action.payload;
+			state.questionDialog.open = true;
+			state.questionDialog.templateId = action.payload;
+			state.questionDialog.type = 'add';
+			state.questionDialog.question = undefined;
 		},
-		closeAddQuestionDialog(state) {
-			state.addQuestionDialog.open = false;
+		openEditQuestionDialog(
+			state,
+			action: PayloadAction<{ templateId: string; question: Question }>
+		) {
+			const { question, templateId } = action.payload;
+
+			state.questionDialog.open = true;
+			state.questionDialog.type = 'edit';
+			state.questionDialog.question = question;
+			state.questionDialog.templateId = templateId;
+		},
+		closeQuestionDialog(state) {
+			state.questionDialog.open = false;
 		},
 		openAddTagDialog(state, action: PayloadAction<string>) {
 			state.addTagDialog.open = true;
@@ -58,10 +75,11 @@ export const templatesSlice = createSlice({
 export const {
 	closeAddTemplateDialog,
 	openAddTemplateDialog,
-	closeAddQuestionDialog,
+	closeQuestionDialog,
 	openAddQuestionDialog,
 	closeAddTagDialog,
-	openAddTagDialog
+	openAddTagDialog,
+	openEditQuestionDialog
 } = templatesSlice.actions;
 
 export default templatesSlice.reducer;

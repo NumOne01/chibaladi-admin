@@ -11,6 +11,9 @@ import CheckIcon from '@material-ui/icons/CheckCircleOutline';
 import { useState } from 'react';
 import { removeQuestion } from 'api/templates';
 import { useQuestions } from 'hooks/api';
+import { Edit } from '@material-ui/icons';
+import { useDispatch } from 'react-redux';
+import { openEditQuestionDialog } from 'store/templates';
 
 interface Props {
 	question: Question;
@@ -21,6 +24,7 @@ export default function QuestionRow({ question, templateId }: Props) {
 	const { mutate } = useQuestions(templateId);
 	const [deleteQuestionLoading, setDeleteQuestionLoading] =
 		useState<boolean>(false);
+	const dispatch = useDispatch();
 
 	const onDeleteQuestion = async (event: React.MouseEvent) => {
 		event.stopPropagation();
@@ -28,6 +32,10 @@ export default function QuestionRow({ question, templateId }: Props) {
 		const newQuestions = await removeQuestion(templateId, question.id);
 		mutate(newQuestions);
 		setDeleteQuestionLoading(false);
+	};
+
+	const onEditQuestion = () => {
+		dispatch(openEditQuestionDialog({ templateId, question }));
 	};
 
 	return (
@@ -43,11 +51,18 @@ export default function QuestionRow({ question, templateId }: Props) {
 							<CircularProgress size={24} />
 						</div>
 					) : (
-						<Tooltip title="حذف" arrow>
-							<IconButton onClick={onDeleteQuestion}>
-								<DeleteIcon color="secondary" />
-							</IconButton>
-						</Tooltip>
+						<div className="flex">
+							<Tooltip title="ویرایش" arrow>
+								<IconButton onClick={onEditQuestion}>
+									<Edit color="primary" />
+								</IconButton>
+							</Tooltip>
+							<Tooltip title="حذف" arrow>
+								<IconButton onClick={onDeleteQuestion}>
+									<DeleteIcon color="secondary" />
+								</IconButton>
+							</Tooltip>
+						</div>
 					)}
 				</div>
 			</AccordionSummary>

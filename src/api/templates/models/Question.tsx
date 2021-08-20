@@ -9,5 +9,5 @@ export interface Question {
 export interface QuestionOption {
 	id: string;
 	text: string;
-	isAnswer: true;
+	isAnswer: boolean;
 }
