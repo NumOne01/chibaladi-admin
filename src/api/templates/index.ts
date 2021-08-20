@@ -55,3 +55,7 @@ export const addTag = (
 		.put<TagGroup>(`${PREFIX}/${templateId}/tag-groups/${groupIndex}`, tags)
 		.then(data => data.data);
 };
+
+export const getTemplateStats = (templateId: number | string) => {
+	return axios.get(`quiz/stats/quiz/${templateId}/general`)
+}

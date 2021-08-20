@@ -15,6 +15,10 @@ export interface TemplatesState {
 		open: boolean;
 		templateId: string;
 	};
+	statsDialog: {
+		open: boolean;
+		templateId: string;
+	};
 }
 
 const initialState: TemplatesState = {
@@ -27,6 +31,10 @@ const initialState: TemplatesState = {
 		type: 'add'
 	},
 	addTagDialog: {
+		open: false,
+		templateId: ''
+	},
+	statsDialog: {
 		open: false,
 		templateId: ''
 	}
@@ -68,6 +76,13 @@ export const templatesSlice = createSlice({
 		},
 		closeAddTagDialog(state) {
 			state.addTagDialog.open = false;
+		},
+		openStatsDiaolg(state, action: PayloadAction<string>) {
+			state.statsDialog.open = true;
+			state.statsDialog.templateId = action.payload;
+		},
+		closeStatsDialog(state) {
+			state.statsDialog.open = false;
 		}
 	}
 });
@@ -79,7 +94,9 @@ export const {
 	openAddQuestionDialog,
 	closeAddTagDialog,
 	openAddTagDialog,
-	openEditQuestionDialog
+	openEditQuestionDialog,
+	closeStatsDialog,
+	openStatsDiaolg
 } = templatesSlice.actions;
 
 export default templatesSlice.reducer;
