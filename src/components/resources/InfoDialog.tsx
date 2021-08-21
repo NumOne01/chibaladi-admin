@@ -86,6 +86,11 @@ export default function InfoDialog() {
 					نام عکس را برابر "interview" قرار دهید
 				</p>
 				<Divider className="my-4" />
+				<h2 className="text-lg my-3">صصفحه درباره ما</h2>
+				<p className="mb-1">
+					نام عکس را برابر "about" قرار دهید
+				</p>
+				<Divider className="my-4" />
 				<h2 className="text-lg my-3">صفحه تماس با ما</h2>
 				<p className="mb-1">
 					نام عکس را برابر "contact" قرار دهید
