@@ -7,7 +7,7 @@ import AppBar from '@material-ui/core/AppBar';
 import { closePlayerDialog } from 'store/videos';
 import { Close } from '@material-ui/icons';
 import Player from './Player';
-import { CircularProgress, IconButton } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { getVideoPermission } from 'api/videos';
 
@@ -17,7 +17,6 @@ export default function PlayerDialog() {
 	const { playerDialog } = useSelector((store: RootState) => store.videos);
 
 	const { data: auth } = useSelector((store: RootState) => store.auth);
-	const [loading, setLoading] = useState<boolean>(true);
 
 	const { open, video } = playerDialog;
 
@@ -32,11 +31,7 @@ export default function PlayerDialog() {
 		};
 
 		if (video) {
-			setLoading(true);
 			getPermission();
-			setTimeout(() => {
-				setLoading(false);
-			}, 1000)
 			intervalId = setInterval(() => {
 				getPermission();
 			}, 1800);
@@ -44,7 +39,6 @@ export default function PlayerDialog() {
 
 		return () => {
 			clearInterval(intervalId);
-			setLoading(true);
 		};
 	}, [video]);
 
@@ -65,32 +59,23 @@ export default function PlayerDialog() {
 					</IconButton>
 				</div>
 			</AppBar>
-			{loading ? (
-				<div
-					className="w-full flex justify-center items-center"
-					style={{ height: 337.5 }}
-				>
-					<CircularProgress />
-				</div>
-			) : (
-				video && <Player
-					options={{
-						autoplay: true,
-						controls: true,
-						responsive: true,
-						fluid: true,
-						poster: `${process.env.REACT_APP_API_URL}/video/v1/admin/v/${
-							video?.id || ''
-						}/image`,
-						sources: [
-							{
-								src: `${process.env.REACT_APP_API_URL}/video/v1/admin/v/${video?.id}/video.stream?auth=${auth.access_token}`,
-								type: 'video/mp4'
-							}
-						]
-					}}
-				/>
-			)}
+			<Player
+				options={{
+					autoplay: true,
+					controls: true,
+					responsive: true,
+					fluid: true,
+					poster: `${process.env.REACT_APP_API_URL}/video/v1/admin/v/${
+						video?.id || ''
+					}/image`,
+					sources: [
+						{
+							src: `${process.env.REACT_APP_API_URL}/video/v1/admin/v/${video?.id}/video.stream?auth=${auth.access_token}`,
+							type: 'video/mp4'
+						}
+					]
+				}}
+			/>
 		</Dialog>
 	);
 }
