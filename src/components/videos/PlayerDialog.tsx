@@ -4,9 +4,7 @@ import { Transition } from 'components/transition/Transition';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
 import AppBar from '@material-ui/core/AppBar';
-import {
-	closePlayerDialog,
-} from 'store/videos';
+import { closePlayerDialog } from 'store/videos';
 import { Close } from '@material-ui/icons';
 import Player from './Player';
 import { CircularProgress, IconButton } from '@material-ui/core';
@@ -16,9 +14,7 @@ import { getVideoPermission } from 'api/videos';
 export default function PlayerDialog() {
 	const dispatch = useDispatch();
 
-	const { playerDialog } = useSelector(
-		(store: RootState) => store.videos
-	);
+	const { playerDialog } = useSelector((store: RootState) => store.videos);
 
 	const { data: auth } = useSelector((store: RootState) => store.auth);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -32,7 +28,8 @@ export default function PlayerDialog() {
 	useEffect(() => {
 		let intervalId: NodeJS.Timer;
 		const getPermission = async () => {
-		await getVideoPermission(video?.id || -1);
+			await getVideoPermission(video?.id || -1);
+			console.log('got here')
 		};
 
 		if (video) {
@@ -46,7 +43,7 @@ export default function PlayerDialog() {
 
 		return () => {
 			clearInterval(intervalId);
-			setLoading(true);
+			setLoading(false);
 		};
 	}, [video]);
 
@@ -67,7 +64,7 @@ export default function PlayerDialog() {
 					</IconButton>
 				</div>
 			</AppBar>
-			{loading? (
+			{loading ? (
 				<div
 					className="w-full flex justify-center items-center"
 					style={{ height: 337.5 }}
@@ -75,7 +72,7 @@ export default function PlayerDialog() {
 					<CircularProgress />
 				</div>
 			) : (
-				<Player
+				video && <Player
 					options={{
 						autoplay: true,
 						controls: true,
@@ -86,9 +83,7 @@ export default function PlayerDialog() {
 						}/image`,
 						sources: [
 							{
-								src: `${process.env.REACT_APP_API_URL}/video/v1/admin/v/${
-									video?.id
-								}/video.stream?auth=${auth.access_token}`,
+								src: `${process.env.REACT_APP_API_URL}/video/v1/admin/v/${video?.id}/video.stream?auth=${auth.access_token}`,
 								type: 'video/mp4'
 							}
 						]
