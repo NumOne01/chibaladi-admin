@@ -7,6 +7,7 @@ export interface TemplatesState {
 		initialValue: string;
 		type: 'add' | 'edit';
 		category?: Category;
+		categoryType: 'video' | 'template';
 	};
 }
 
@@ -14,7 +15,8 @@ const initialState: TemplatesState = {
 	categoryDialog: {
 		open: false,
 		initialValue: '',
-		type: 'add'
+		type: 'add',
+		categoryType: 'template'
 	}
 };
 
@@ -35,6 +37,13 @@ export const templatesSlice = createSlice({
 			state.categoryDialog.open = true;
 			state.categoryDialog.category = action.payload;
 			state.categoryDialog.type = 'edit';
+			state.categoryDialog.categoryType = 'template';
+		},
+		openEditVideoCategoryDialog(state, action: PayloadAction<Category>) {
+			state.categoryDialog.open = true;
+			state.categoryDialog.category = action.payload;
+			state.categoryDialog.type = 'edit';
+			state.categoryDialog.categoryType = 'video';
 		}
 	}
 });
@@ -42,7 +51,8 @@ export const templatesSlice = createSlice({
 export const {
 	openAddCategoryDialog,
 	closeCategoryDialog,
-	openEditCategoryDialog
+	openEditCategoryDialog,
+	openEditVideoCategoryDialog
 } = templatesSlice.actions;
 
 export default templatesSlice.reducer;

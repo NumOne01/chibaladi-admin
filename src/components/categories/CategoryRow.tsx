@@ -11,23 +11,27 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { useVideoCategories } from 'hooks/api';
 import { deleteVideoCategory } from 'api/videos';
 import { useDispatch } from 'react-redux';
-import { openEditCategoryDialog } from 'store/categories';
+import { openEditCategoryDialog, openEditVideoCategoryDialog } from 'store/categories';
 import { Edit } from '@material-ui/icons';
 
 interface Props {
 	category: Category | CategoryInfo;
 	hasDelete?: boolean;
 	hasEdit?: boolean;
+	type?: 'video' | 'template';
 }
 
-export default function CategoryRow({ category, hasDelete, hasEdit }: Props) {
+export default function CategoryRow({ category, hasDelete, hasEdit, type = 'template' }: Props) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const dispatch = useDispatch();
 
 	const { mutate } = useVideoCategories();
 
-	const onEditCategory = () => {
-		dispatch(openEditCategoryDialog(category as any));
+	const onEditCategory = (event: MouseEvent) => {
+		event.stopPropagation();
+		dispatch(type==='template' ? 
+			openEditCategoryDialog(category as any): 
+			openEditVideoCategoryDialog(category as any));
 	};
 
 	const onDeleteCategory = async (event: MouseEvent) => {

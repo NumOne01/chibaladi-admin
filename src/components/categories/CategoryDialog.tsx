@@ -12,12 +12,13 @@ import { Form, useFormik } from 'formik';
 import * as Yup from 'yup';
 import AppBar from '@material-ui/core/AppBar';
 import { useState } from 'react';
-import { useCategories } from 'hooks/api';
+import { useCategories, useVideoCategories } from 'hooks/api';
 import { AddCategoryBody } from 'api/categories/models/Category';
 import { newCategory, updateCategory } from 'api/categories';
 import { TextField } from '@material-ui/core';
 import { closeCategoryDialog } from 'store/categories';
 import { useEffect } from 'react';
+import { updateCategoryDetails } from 'api/videos';
 
 const initialValues: AddCategoryBody = {
 	details: '',
@@ -32,8 +33,10 @@ const validationSchema = Yup.object({
 export default function CategoryDialog() {
 	const dispatch = useDispatch();
 	const { mutate, data: categories } = useCategories();
+	const { data: videoCategories, mutate: mutateCategories } = useVideoCategories();
 
-	const { open, initialValue, type, category } = useSelector(
+
+	const { open, initialValue, type, category, categoryType } = useSelector(
 		(store: RootState) => store.categories.categoryDialog
 	);
 
@@ -53,21 +56,39 @@ export default function CategoryDialog() {
 		dispatch(closeCategoryDialog());
 	};
 
+	const updateTemplateCategory = async () => {
+		const editedCat = await updateCategory({
+			...values,
+			id: category?.id || ''
+		});
+		const catIndex = categories?.findIndex(cat => cat.id === category?.id);
+		const newCats = [...(categories || [])];
+		if (catIndex && catIndex !== -1) {
+			newCats[catIndex] = editedCat;
+			mutate(newCats);
+		}
+	}
+
+	const updateVideoCategory = async () => {
+		const editedCat = await updateCategoryDetails(values.details, values.name);
+		const catIndex = videoCategories?.findIndex(cat => cat.id === (category?.id as any));
+		const newCats = [...(videoCategories || [])];
+		if (catIndex && catIndex !== -1) {
+			newCats[catIndex] = editedCat;
+			mutateCategories(newCats);
+		}
+	}
+
 	const onSubmit = async (values: AddCategoryBody) => {
 		setAddCategoryLoading(true);
 		if (type === 'add') {
 			const newCat = await newCategory(values);
 			mutate(prevCats => [...(prevCats || []), newCat]);
 		} else if (type === 'edit') {
-			const editedCat = await updateCategory({
-				...values,
-				id: category?.id || ''
-			});
-			const catIndex = categories?.findIndex(cat => cat.id === category?.id);
-			const newCats = [...(categories || [])];
-			if (catIndex && catIndex !== -1) {
-				newCats[catIndex] = editedCat;
-				mutate(newCats);
+			if(categoryType === 'template') {
+				updateTemplateCategory();
+			} else {
+				updateVideoCategory();
 			}
 		}
 		resetForm();

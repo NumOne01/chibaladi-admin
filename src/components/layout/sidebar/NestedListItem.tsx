@@ -38,7 +38,7 @@ export default function NestedListItem({ navItem, url }: Props) {
 						<NavLink
 							key={route.link}
 							to={`${url}/${navItem.link}${route.link}`}
-							activeClassName="bg-gray-200"
+							activeClassName="block bg-gray-200"
 						>
 							<ListItem button className="pr-12">
 								<ListItemText primary={route.text} />
