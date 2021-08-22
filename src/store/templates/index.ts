@@ -1,9 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Question } from 'api/templates/models/Question';
+import { Template } from 'api/templates/models/Template';
 
 export interface TemplatesState {
 	addTemplateDialog: {
 		open: boolean;
+	};
+	templateDetailsDialog: {
+		open: boolean;
+		template: Template | undefined;
 	};
 	questionDialog: {
 		open: boolean;
@@ -24,6 +29,10 @@ export interface TemplatesState {
 const initialState: TemplatesState = {
 	addTemplateDialog: {
 		open: false
+	},
+	templateDetailsDialog: {
+		open: false,
+		template: undefined
 	},
 	questionDialog: {
 		open: false,
@@ -83,6 +92,13 @@ export const templatesSlice = createSlice({
 		},
 		closeStatsDialog(state) {
 			state.statsDialog.open = false;
+		},
+		openTemplateDetailsDialog(state, action: PayloadAction<Template>) {
+			state.templateDetailsDialog.open = true;
+			state.templateDetailsDialog.template = action.payload;
+		},
+		closeTemplateDetailsDialog(state) {
+			state.templateDetailsDialog.open = false;
 		}
 	}
 });
@@ -96,7 +112,9 @@ export const {
 	openAddTagDialog,
 	openEditQuestionDialog,
 	closeStatsDialog,
-	openStatsDiaolg
+	openStatsDiaolg,
+	closeTemplateDetailsDialog,
+	openTemplateDetailsDialog
 } = templatesSlice.actions;
 
 export default templatesSlice.reducer;

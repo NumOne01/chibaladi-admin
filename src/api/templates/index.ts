@@ -62,3 +62,11 @@ export const getTemplateStats = (templateId: number | string) => {
 		.post<TemplateStats>(`quiz/stats/quiz/${templateId}/general`)
 		.then(data => data.data);
 };
+
+export const editTemplateDetails = (templateId: string, details: string) => {
+	return axios
+		.put(`${PREFIX}/${templateId}/details`, undefined, {
+			params: { details }
+		})
+		.then(data => data.data);
+};

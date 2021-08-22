@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
-import { openAddQuestionDialog, openAddTagDialog } from 'store/templates';
+import {
+	openAddQuestionDialog,
+	openAddTagDialog,
+	openTemplateDetailsDialog
+} from 'store/templates';
 import { translateLevel } from 'utils/translateLevel';
 import {
 	Button,
@@ -25,6 +29,8 @@ import {
 } from 'hooks/api';
 import { removeTemplate, setTemplateStatus } from 'api/templates';
 import { Helmet } from 'react-helmet';
+import TemplateDetailsDialog from 'components/categories/TemplateDetailsDialog';
+import { Edit } from '@material-ui/icons';
 
 export default function TemplateEdit() {
 	const { id } = useParams<{ id: string }>();
@@ -80,6 +86,10 @@ export default function TemplateEdit() {
 
 	const onAddTemplateTag = () => [dispatch(openAddTagDialog(id))];
 
+	const onEditTemplateDetails = () => {
+		dispatch(openTemplateDetailsDialog(template as any));
+	};
+
 	if (!template) return <Redirect to="/dashboard/templates" />;
 
 	return (
@@ -127,6 +137,11 @@ export default function TemplateEdit() {
 									</IconButton>
 								</Tooltip>
 							)}
+							<Tooltip title="ویراش توضیحات" arrow>
+								<IconButton onClick={onEditTemplateDetails}>
+									<Edit color="primary" />
+								</IconButton>
+							</Tooltip>
 						</div>
 					</div>
 				</div>
@@ -200,6 +215,7 @@ export default function TemplateEdit() {
 				)}
 				<AddTagDialog />
 				<AddQuestionDialog />
+				<TemplateDetailsDialog />
 			</div>
 		</>
 	);
