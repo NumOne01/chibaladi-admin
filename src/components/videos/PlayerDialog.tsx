@@ -35,7 +35,9 @@ export default function PlayerDialog() {
 		if (video) {
 			setLoding(true);
 			getPermission();
-			setLoding(false)
+			setTimeout(() => {
+				setLoding(false);
+			}, 1000);
 			intervalId = setInterval(() => {
 				getPermission();
 			}, 1800);
