@@ -6,23 +6,22 @@ import { RootState } from 'store';
 import AppBar from '@material-ui/core/AppBar';
 import {
 	closePlayerDialog,
-	removeVideoLameToken,
-	setVideoLameToken
 } from 'store/videos';
 import { Close } from '@material-ui/icons';
 import Player from './Player';
 import { CircularProgress, IconButton } from '@material-ui/core';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getVideoPermission } from 'api/videos';
 
 export default function PlayerDialog() {
 	const dispatch = useDispatch();
 
-	const { videosLameToken, playerDialog } = useSelector(
+	const { playerDialog } = useSelector(
 		(store: RootState) => store.videos
 	);
 
 	const { data: auth } = useSelector((store: RootState) => store.auth);
+	const [loading, setLoading] = useState<boolean>(true);
 
 	const { open, video } = playerDialog;
 
@@ -33,20 +32,21 @@ export default function PlayerDialog() {
 	useEffect(() => {
 		let intervalId: NodeJS.Timer;
 		const getPermission = async () => {
-			const token = await getVideoPermission(video?.id || -1);
-			dispatch(setVideoLameToken({ videoId: video?.id || '', token }));
+		await getVideoPermission(video?.id || -1);
 		};
 
 		if (video) {
+			setLoading(true);
 			getPermission();
+			setLoading(false);
 			intervalId = setInterval(() => {
 				getPermission();
-			}, 240000);
+			}, 1800);
 		}
 
 		return () => {
 			clearInterval(intervalId);
-			dispatch(removeVideoLameToken(video?.id || ''));
+			setLoading(true);
 		};
 	}, [video]);
 
@@ -67,7 +67,7 @@ export default function PlayerDialog() {
 					</IconButton>
 				</div>
 			</AppBar>
-			{!videosLameToken[video?.id || ''] ? (
+			{loading? (
 				<div
 					className="w-full flex justify-center items-center"
 					style={{ height: 337.5 }}
@@ -88,9 +88,7 @@ export default function PlayerDialog() {
 							{
 								src: `${process.env.REACT_APP_API_URL}/video/v1/admin/v/${
 									video?.id
-								}/video.stream?auth=${auth.access_token}&permit=${
-									videosLameToken[video?.id || '']
-								}`,
+								}/video.stream?auth=${auth.access_token}`,
 								type: 'video/mp4'
 							}
 						]
