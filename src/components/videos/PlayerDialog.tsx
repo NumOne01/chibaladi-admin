@@ -29,13 +29,14 @@ export default function PlayerDialog() {
 		let intervalId: NodeJS.Timer;
 		const getPermission = async () => {
 			await getVideoPermission(video?.id || -1);
-			console.log('got here')
 		};
 
 		if (video) {
 			setLoading(true);
 			getPermission();
-			setLoading(false);
+			setTimeout(() => {
+				setLoading(false);
+			}, 1000)
 			intervalId = setInterval(() => {
 				getPermission();
 			}, 1800);
@@ -43,7 +44,7 @@ export default function PlayerDialog() {
 
 		return () => {
 			clearInterval(intervalId);
-			setLoading(false);
+			setLoading(true);
 		};
 	}, [video]);
 

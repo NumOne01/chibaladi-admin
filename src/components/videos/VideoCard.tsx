@@ -1,6 +1,6 @@
 import { CircularProgress, IconButton, Paper } from '@material-ui/core';
 import { Delete, Edit, PlayCircleFilled } from '@material-ui/icons';
-import { deleteVideo } from 'api/videos';
+import { deleteVideo, getVideoPermission } from 'api/videos';
 import { Video } from 'api/videos/models/Video';
 import { useVideos } from 'hooks/api';
 import { useState } from 'react';
@@ -15,6 +15,7 @@ export default function VideoCard({ video }: Props) {
 	const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 	const { mutate } = useVideos();
 	const dispatch = useDispatch();
+	const [loading, setLoading] = useState<boolean>(false);
 
 	const onDeleteVideo = async () => {
 		setDeleteLoading(true);
@@ -27,7 +28,10 @@ export default function VideoCard({ video }: Props) {
 		dispatch(openEditVideoDialog(video));
 	};
 
-	const onPlayVideo = () => {
+	const onPlayVideo = async () => {
+		setLoading(true);
+		await getVideoPermission(video.id || -1);
+		setLoading(false);
 		dispatch(openPlayerDialog(video));
 	};
 
@@ -43,7 +47,11 @@ export default function VideoCard({ video }: Props) {
 					className="w-full"
 				/>
 				<div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl">
-					<PlayCircleFilled color="primary" fontSize="inherit" />
+					{loading ? (
+						<CircularProgress />
+					) : (
+						<PlayCircleFilled color="primary" fontSize="inherit" />
+					)}
 				</div>
 			</div>
 
