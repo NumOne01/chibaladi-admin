@@ -6,7 +6,7 @@ interface Props {
 }
 
 export const Player = (props: Props) => {
-	const videoRef = useRef(null);
+	const videoRef = useRef<HTMLVideoElement>(null);
 	const { options } = props;
 
 	// This seperate functional component fixes the removal of the videoelement
@@ -22,6 +22,7 @@ export const Player = (props: Props) => {
 		let player: VideoJsPlayer;
 		if (videoElement) {
 			player = videojs(videoElement, { ...options }, () => {});
+			videoElement.oncontextmenu = () => false;
 		}
 		return () => {
 			if (player) {
