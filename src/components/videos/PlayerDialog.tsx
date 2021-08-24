@@ -37,7 +37,7 @@ export default function PlayerDialog() {
 			getPermission();
 			setTimeout(() => {
 				setLoding(false);
-			}, 1000);
+			}, 2000);
 			intervalId = setInterval(() => {
 				getPermission();
 			}, 1800);
