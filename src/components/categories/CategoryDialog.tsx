@@ -65,7 +65,7 @@ export default function CategoryDialog() {
 		const newCats = [...(categories || [])];
 		if (catIndex && catIndex !== -1) {
 			newCats[catIndex] = editedCat;
-			mutate(newCats);
+			mutate(newCats, false);
 		}
 	}
 
@@ -75,7 +75,7 @@ export default function CategoryDialog() {
 		const newCats = [...(videoCategories || [])];
 		if (catIndex && catIndex !== -1) {
 			newCats[catIndex] = editedCat;
-			mutateCategories(newCats);
+			mutateCategories(newCats, false);
 		}
 	}
 

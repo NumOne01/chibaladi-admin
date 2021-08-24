@@ -4,7 +4,7 @@ import { LoginForm } from 'api/auth/models/LoginForm';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { RootState } from 'store';
 import { setUser } from 'store/auth';
 import * as Yup from 'yup';
@@ -100,31 +100,21 @@ export default function Login() {
 							helperText={touched.password ? errors.password : ''}
 						/>
 						{<div className="text-red-500 text-sm">{formState.error}</div>}
-						{formState.loading ? (
-							<div className="text-center w-full">
-								<CircularProgress />
-							</div>
-						) : (
-							<div className="mt-5">
-								<Button
-									color="primary"
-									variant="contained"
-									className="ml-4"
-									type="submit"
-									fullWidth
-								>
-									ورود
-								</Button>
-								<div className="text-gray-400 text-sm mt-4">
-									اکانت نداری ؟{' '}
-									<Link to="/signup">
-										<span className="text-blue-500 cursor-pointer">
-											ثبت نام کن
-										</span>
-									</Link>
-								</div>
-							</div>
-						)}
+						<div className="mt-5">
+							<Button
+								color="primary"
+								variant="contained"
+								className="ml-4"
+								type="submit"
+								fullWidth
+								disabled={formState.loading}
+								endIcon={
+									formState.loading && <CircularProgress size={16} />
+								}
+							>
+								ورود
+							</Button>
+						</div>
 					</form>
 				</Grid>
 				<Grid
@@ -135,7 +125,7 @@ export default function Login() {
 					sm={6}
 					className="bg-blue-400 h-full items-center justify-center hidden sm:flex"
 				>
-					<img src="/images/login.svg" alt="" className="w-10/12" />
+					<img src="/admin/images/login.svg" alt="" className="w-10/12" />
 				</Grid>
 			</Grid>
 		</>
