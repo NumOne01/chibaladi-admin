@@ -46,7 +46,7 @@ export default function TemplateDetailsDialog() {
 			const updatedTemplate = { ...template, details: values.details };
 			const newTemplates = [...(templates || [])];
 			newTemplates[templateIndex] = updatedTemplate as any;
-			mutate(newTemplates);
+			mutate(newTemplates, false);
 		}
 		setLoading(false);
 		handleClose();
