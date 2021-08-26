@@ -21,7 +21,16 @@ export const Player = (props: Props) => {
 		const videoElement = videoRef.current;
 		let player: VideoJsPlayer;
 		if (videoElement) {
-			player = videojs(videoElement, { ...options }, () => {});
+			player = videojs(videoElement, { ...options }, function() {
+				this.on('error', () => {
+					const time = this.currentTime();
+
+					this.error(null);
+					this.load();
+					this.currentTime(time);
+					this.play();
+				})
+			});
 			videoElement.oncontextmenu = () => false;
 		}
 		return () => {
