@@ -274,7 +274,7 @@ export default function AddQuestionDialog() {
 																onClick={() => {
 																	if (optionToAdd) {
 																		arrayHelpers.push({
-																			id: '',
+																			id: uuidv4(),
 																			text: optionToAdd,
 																			isAnswer: false
 																		});
