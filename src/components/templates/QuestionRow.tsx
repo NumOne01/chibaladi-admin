@@ -44,7 +44,7 @@ export default function QuestionRow({ question, templateId }: Props) {
 				expandIcon={<ExpandMoreIcon />}
 				classes={{ content: 'items-center', expanded: 'mb-0' }}
 			>
-				<Typography>{question.text}</Typography>
+				<Typography className="whitespace-pre-wrap">{question.text}</Typography>
 				<div className="mr-auto">
 					{deleteQuestionLoading ? (
 						<div className="p-2">
