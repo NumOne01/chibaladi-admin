@@ -101,7 +101,7 @@ export default function AddQuestionDialog() {
 		if (answer === '') {
 			setAnswerError('یک گزینه را به عنوان گزینه صحیح انتخاب کنید');
 		} else {
-			const modifiedValues = {...values};
+			const modifiedValues = { ...values };
 			modifiedValues.options = setCorrectOption(modifiedValues.options, answer);
 			setAddQuestionLoading(true);
 			const newQuestions = await addQuestion(modifiedValues, templateId);
@@ -142,13 +142,7 @@ export default function AddQuestionDialog() {
 			</AppBar>
 			<DialogContent className="mt-7 md:px-10">
 				<FormikProvider value={formik}>
-					<Form
-						onKeyDown={event => {
-							if (event.key === 'Enter') {
-								event.preventDefault();
-							}
-						}}
-					>
+					<Form>
 						<DialogContentText>
 							<TextField
 								variant="outlined"
@@ -229,7 +223,7 @@ export default function AddQuestionDialog() {
 														}}
 														color="primary"
 														variant="outlined"
-														className="ml-2"
+														className="ml-2 mb-2"
 													/>
 												))
 											) : (
@@ -252,11 +246,13 @@ export default function AddQuestionDialog() {
 											variant="outlined"
 											label="صورت گزینه"
 											placeholder="صورت گزینه"
+											multiline
 											value={optionToAdd}
 											onChange={event => setOptionToAdd(event.target.value)}
 											fullWidth
 											onKeyDown={e => {
 												if (e.key === 'Enter' && optionToAdd) {
+													e.preventDefault();
 													arrayHelpers.push({
 														id: uuidv4(),
 														text: optionToAdd,
@@ -304,7 +300,7 @@ export default function AddQuestionDialog() {
 																	color="primary"
 																/>
 															</ListItemIcon>
-															<ListItemText primary={option.text} />
+															<ListItemText primary={option.text} dir="auto" />
 															<ListItemSecondaryAction>
 																<IconButton
 																	edge="end"
