@@ -47,7 +47,15 @@ export const getGroupTags = (templateId: string) => {
 		.then(data => data.data);
 };
 
-export const addTag = (
+export const deleteTag = (
+	templateId: string,
+	groupIndex: number | string,
+) => {
+	return axios
+		.delete<TagGroup>(`${PREFIX}/${templateId}/tag-groups/${groupIndex}`)
+};
+
+export const addOrEditTag = (
 	templateId: string,
 	groupIndex: number,
 	tags: string[]

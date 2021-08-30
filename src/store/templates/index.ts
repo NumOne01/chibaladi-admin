@@ -16,9 +16,12 @@ export interface TemplatesState {
 		type: 'add' | 'edit';
 		question?: Question;
 	};
-	addTagDialog: {
+	tagDialog: {
 		open: boolean;
 		templateId: string;
+		type: 'add' | 'edit';
+		tags?: string[];
+		groupIndex?: number | string;
 	};
 	statsDialog: {
 		open: boolean;
@@ -39,9 +42,10 @@ const initialState: TemplatesState = {
 		templateId: '',
 		type: 'add'
 	},
-	addTagDialog: {
+	tagDialog: {
 		open: false,
-		templateId: ''
+		templateId: '',
+		type: 'add'
 	},
 	statsDialog: {
 		open: false,
@@ -80,11 +84,32 @@ export const templatesSlice = createSlice({
 			state.questionDialog.open = false;
 		},
 		openAddTagDialog(state, action: PayloadAction<string>) {
-			state.addTagDialog.open = true;
-			state.addTagDialog.templateId = action.payload;
+			state.tagDialog = {
+				open: true,
+				templateId: action.payload,
+				type: 'add',
+				tags: undefined,
+				groupIndex: undefined
+			};
 		},
-		closeAddTagDialog(state) {
-			state.addTagDialog.open = false;
+		openEditTagDialog(
+			state,
+			action: PayloadAction<{
+				templateId: string;
+				tags: string[];
+				groupIndex: number | string;
+			}>
+		) {
+			state.tagDialog = {
+				open: true,
+				templateId: action.payload.templateId,
+				type: 'edit',
+				tags: action.payload.tags,
+				groupIndex: action.payload.groupIndex
+			};
+		},
+		closeTagDialog(state) {
+			state.tagDialog.open = false;
 		},
 		openStatsDiaolg(state, action: PayloadAction<string>) {
 			state.statsDialog.open = true;
@@ -108,13 +133,14 @@ export const {
 	openAddTemplateDialog,
 	closeQuestionDialog,
 	openAddQuestionDialog,
-	closeAddTagDialog,
+	closeTagDialog,
 	openAddTagDialog,
 	openEditQuestionDialog,
 	closeStatsDialog,
 	openStatsDiaolg,
 	closeTemplateDetailsDialog,
-	openTemplateDetailsDialog
+	openTemplateDetailsDialog,
+	openEditTagDialog
 } = templatesSlice.actions;
 
 export default templatesSlice.reducer;

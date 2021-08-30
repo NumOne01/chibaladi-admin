@@ -20,7 +20,7 @@ import AddQuestionDialog from 'components/templates/AddQuestionDialog';
 import QuestionRow from 'components/templates/QuestionRow';
 import AsyncSwitch from 'components/async-switch/AsyncSwitch';
 import Skeleton from '@material-ui/lab/Skeleton';
-import AddTagDialog from 'components/templates/AddTagDialog';
+import AddTagDialog from 'components/templates/TagDialog';
 import {
 	useCategories,
 	useGroupTags,
@@ -31,6 +31,7 @@ import { removeTemplate, setTemplateStatus } from 'api/templates';
 import { Helmet } from 'react-helmet';
 import TemplateDetailsDialog from 'components/categories/TemplateDetailsDialog';
 import { Edit } from '@material-ui/icons';
+import TagGroup from 'components/templates/TagGroup';
 
 export default function TemplateEdit() {
 	const { id } = useParams<{ id: string }>();
@@ -89,6 +90,8 @@ export default function TemplateEdit() {
 	const onEditTemplateDetails = () => {
 		dispatch(openTemplateDetailsDialog(template as any));
 	};
+
+	const onDeleteTagGroup = () => {};
 
 	if (!template) return <Redirect to="/dashboard/templates" />;
 
@@ -172,13 +175,16 @@ export default function TemplateEdit() {
 						سرفصلی برای این آزمون وجود ندارد
 					</div>
 				) : (
-					<div className="flex my-8">
-						{Object.values(groupTags || {}).map(tag => (
-							<div key={tag} className="ml-2">
-								<Chip
-									variant="outlined"
-									color="primary"
-									label={tag.join(' , ')}
+					<div className="flex flex-wrap my-8">
+						{Object.keys(groupTags || {}).map(index => (
+							<div
+								key={(groupTags as any)[index as any] as any}
+								className="ml-2 mb-2"
+							>
+								<TagGroup
+									groupIndex={index}
+									tags={(groupTags as any)[index as any] as any}
+									templateId={template.id}
 								/>
 							</div>
 						))}
